@@ -1,0 +1,21 @@
+module codes.fdk.blueprint.api.infrastructure.rest.webflux {
+    requires codes.fdk.blueprint.api.infrastructure.persistence.r2dbc;
+
+    requires spring.web;
+    requires spring.webflux;
+    requires spring.hateoas;
+    requires spring.boot;
+    requires spring.boot.autoconfigure;
+    requires spring.beans;
+    requires spring.core;
+    requires spring.context;
+    requires reactor.core;
+    requires org.mapstruct;
+    requires java.annotation;
+    requires com.fasterxml.jackson.annotation;
+    requires org.reactivestreams;
+    requires java.validation;
+    requires org.hibernate.validator;
+
+    exports codes.fdk.blueprint.api.infrastructure.rest.webflux;
+}

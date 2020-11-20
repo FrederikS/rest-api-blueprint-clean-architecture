@@ -1,0 +1,32 @@
+apply plugin: 'java-library'
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation project(':infrastructure:spring-boot-r2dbc-persistence-adapter')
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-config'
+    implementation 'org.mapstruct:mapstruct'
+    implementation 'org.hibernate.validator:hibernate-validator:6.1.6.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+    implementation('org.springframework.boot:spring-boot-starter-hateoas') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
+    }
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'com.github.javafaker:javafaker'
+    testImplementation(testFixtures(project(':infrastructure:spring-boot-r2dbc-persistence-adapter')))
+}
+
+compileJava {
+    options.compilerArgs += [
+            '-Amapstruct.defaultInjectionStrategy=constructor',
+            '-Amapstruct.defaultComponentModel=spring'
+    ]
+}
+
+bootJar.enabled = false
+jar.enabled = true

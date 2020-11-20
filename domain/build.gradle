@@ -1,23 +1,18 @@
 apply plugin: 'java-library'
-
-ext {
-    reactorVersion = '3.4.0'
-    mapstructVersion = '1.4.1.Final'
-    mockitoVersion = '3.6.0'
-}
+//TODO remove
+apply plugin: 'org.springframework.boot'
 
 dependencies {
-    api "io.projectreactor:reactor-core:${reactorVersion}"
+    api "io.projectreactor:reactor-core"
     api 'com.google.code.findbugs:jsr305:3.0.2'
-    api 'com.fasterxml.jackson.core:jackson-annotations:2.11.3'
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-    testImplementation(platform('org.junit:junit-bom:5.7.0'))
+    api 'com.fasterxml.jackson.core:jackson-annotations'
+    implementation "org.mapstruct:mapstruct"
+    annotationProcessor "org.mapstruct:mapstruct-processor"
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
-    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-    testImplementation "io.projectreactor:reactor-test:${reactorVersion}"
-    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation "org.mockito:mockito-core"
+    testImplementation "org.mockito:mockito-junit-jupiter"
+    testImplementation "io.projectreactor:reactor-test"
+    testImplementation 'com.github.javafaker:javafaker'
 }
 
 compileJava {
@@ -27,4 +22,6 @@ compileJava {
     ]
 }
 
+//TODO remove
+bootJar.enabled = false
 jar.enabled = true
