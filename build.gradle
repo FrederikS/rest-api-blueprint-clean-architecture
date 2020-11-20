@@ -35,8 +35,11 @@ subprojects {
         }
     }
 
-    compileJava {
+    java {
         modularity.inferModulePath = true
+    }
+
+    compileJava {
         options.compilerArgs += ["--enable-preview"]
     }
 
