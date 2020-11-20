@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    kubernetes:
+      config:
+        enabled: false
+        enable-api: false
+      secrets:
+        paths:
+          - /etc/secrets/postgres

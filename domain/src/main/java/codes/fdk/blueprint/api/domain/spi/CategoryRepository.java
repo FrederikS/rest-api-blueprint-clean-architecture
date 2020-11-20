@@ -5,7 +5,6 @@ import codes.fdk.blueprint.api.domain.model.CategoryId;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-//TODO auditing, profiling, projections?
 public interface CategoryRepository {
 
     Mono<Category> save(Category category);

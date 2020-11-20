@@ -1,0 +1,16 @@
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - env
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost/postgres
+    username: postgres
+    password: pw

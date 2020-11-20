@@ -1,5 +1,5 @@
 module codes.fdk.blueprint.api.infrastructure.rest.webflux {
-    requires codes.fdk.blueprint.api.infrastructure.persistence.r2dbc;
+    requires transitive codes.fdk.blueprint.api.domain;
 
     requires spring.web;
     requires spring.webflux;
@@ -18,4 +18,5 @@ module codes.fdk.blueprint.api.infrastructure.rest.webflux {
     requires org.hibernate.validator;
 
     exports codes.fdk.blueprint.api.infrastructure.rest.webflux;
+    exports codes.fdk.blueprint.api.infrastructure.rest.webflux.model;
 }

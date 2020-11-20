@@ -2,11 +2,8 @@ apply plugin: 'java-library'
 apply plugin: 'org.springframework.boot'
 
 dependencies {
-    //TODO remove
-    implementation project(':infrastructure:spring-boot-r2dbc-persistence-adapter')
+    api project(':domain')
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-config'
     implementation 'org.mapstruct:mapstruct'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.6.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor'
@@ -20,6 +17,7 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'com.github.javafaker:javafaker'
     //TODO remove
+    testImplementation(project(':infrastructure:spring-boot-r2dbc-persistence-adapter'))
     testImplementation(testFixtures(project(':infrastructure:spring-boot-r2dbc-persistence-adapter')))
 }
 

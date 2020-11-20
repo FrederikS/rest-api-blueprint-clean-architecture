@@ -17,7 +17,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @IntegrationTest
 @AutoConfigureWebTestClient
-public class FlaconiChallengeApiValidationTests {
+public class CategoryApiValidationTests {
 
     @Autowired
     private WebTestClient webTestClient;

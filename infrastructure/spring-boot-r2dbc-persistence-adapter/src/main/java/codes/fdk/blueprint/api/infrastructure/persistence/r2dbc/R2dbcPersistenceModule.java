@@ -1,14 +1,11 @@
 package codes.fdk.blueprint.api.infrastructure.persistence.r2dbc;
 
 import codes.fdk.blueprint.api.domain.model.CategoryId;
-import codes.fdk.blueprint.api.domain.service.CategoryService;
-import codes.fdk.blueprint.api.domain.spi.CategoryRepository;
 import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.convert.ReadingConverter;
@@ -25,7 +22,6 @@ import java.util.UUID;
 @Configuration
 @EnableAutoConfiguration
 @EnableR2dbcRepositories
-@PropertySource("classpath:r2dbc.properties")
 public class R2dbcPersistenceModule {
 
     @Bean
@@ -59,11 +55,6 @@ public class R2dbcPersistenceModule {
             return UUID.fromString(id.value());
         }
 
-    }
-
-    @Bean
-    CategoryService categoryService(CategoryRepository categoryRepository) {
-        return new CategoryService(categoryRepository);
     }
 
 }

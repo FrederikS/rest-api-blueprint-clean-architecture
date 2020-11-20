@@ -4,7 +4,6 @@ import codes.fdk.blueprint.api.domain.model.CategoryId;
 
 import javax.annotation.Nullable;
 
-//TODO update-command
 public record CreateCategoryCommand(String name, String slug, @Nullable CategoryId parentId, boolean isVisible) {
 
     public static CreateCategoryCommand createRootCategoryCommand(String name,

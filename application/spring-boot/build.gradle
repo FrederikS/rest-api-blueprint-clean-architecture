@@ -1,0 +1,30 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-config'
+    implementation project(':infrastructure:spring-boot-r2dbc-persistence-adapter')
+    implementation project(':infrastructure:spring-boot-webflux-rest-api-adapter')
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation(testFixtures(project(':infrastructure:spring-boot-r2dbc-persistence-adapter')))
+}
+
+//TODO fix
+//compileJava {
+//    options.compilerArgs += [
+//            '--module-path', classpath.asPath,
+//    ]
+//}
+
+bootRun {
+    jvmArgs '--enable-preview'
+}
+
+bootJar {
+    enabled = true
+    layered()
+}
