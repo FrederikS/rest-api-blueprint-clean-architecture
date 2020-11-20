@@ -1,0 +1,5 @@
+rootProject.name = 'rest-api-blueprint-clean-architecture'
+
+include 'domain'
+include 'infrastructure:spring-boot-r2dbc-persistence-adapter'
+

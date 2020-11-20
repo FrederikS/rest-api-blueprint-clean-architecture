@@ -1,0 +1,30 @@
+apply plugin: 'java-library'
+
+ext {
+    reactorVersion = '3.4.0'
+    mapstructVersion = '1.4.1.Final'
+    mockitoVersion = '3.6.0'
+}
+
+dependencies {
+    api "io.projectreactor:reactor-core:${reactorVersion}"
+    api 'com.google.code.findbugs:jsr305:3.0.2'
+    api 'com.fasterxml.jackson.core:jackson-annotations:2.11.3'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    testImplementation(platform('org.junit:junit-bom:5.7.0'))
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+    testImplementation "io.projectreactor:reactor-test:${reactorVersion}"
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+}
+
+compileJava {
+    options.compilerArgs += [
+            '--module-path', classpath.asPath,
+            '-Amapstruct.defaultInjectionStrategy=constructor'
+    ]
+}
+
+jar.enabled = true

@@ -1,0 +1,31 @@
+apply plugin: 'java-library'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java-test-fixtures'
+
+dependencies {
+    api project(':domain')
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    runtimeOnly 'io.r2dbc:r2dbc-postgresql'
+    implementation 'io.projectreactor:reactor-core'
+    implementation 'org.mapstruct:mapstruct:1.4.1.Final'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testFixturesApi 'org.junit.jupiter:junit-jupiter-api'
+    testFixturesImplementation 'org.testcontainers:postgresql:1.14.3'
+}
+
+compileJava {
+    options.compilerArgs += [
+            '-Amapstruct.defaultInjectionStrategy=constructor',
+            '-Amapstruct.defaultComponentModel=spring'
+    ]
+}
+
+bootJar.enabled = false
+jar.enabled = true
