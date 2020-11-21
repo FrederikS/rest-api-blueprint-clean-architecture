@@ -4,7 +4,36 @@ allprojects {
 }
 
 subprojects {
+
     repositories {
         mavenCentral()
     }
+
+    plugins.withType(JavaPlugin).configureEach {
+        java {
+            modularity.inferModulePath = true
+            sourceCompatibility = JavaVersion.VERSION_15
+        }
+
+        configurations.all {
+            exclude group: 'jakarta.annotation', module: 'jakarta.annotation-api'
+        }
+
+        compileJava {
+            doFirst {
+                options.compilerArgs += ['--module-path', classpath.asPath]
+            }
+            options.compilerArgs += "--enable-preview"
+        }
+
+        compileTestJava {
+            options.compilerArgs += ['--enable-preview']
+        }
+
+        test {
+            jvmArgs '--enable-preview'
+            useJUnitPlatform()
+        }
+    }
+
 }
