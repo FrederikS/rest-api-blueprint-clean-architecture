@@ -21,7 +21,6 @@ dependencies {
 
 compileJava {
     options.compilerArgs += [
-            '--module-path', classpath.asPath,
             '-Amapstruct.defaultInjectionStrategy=constructor'
     ]
 }

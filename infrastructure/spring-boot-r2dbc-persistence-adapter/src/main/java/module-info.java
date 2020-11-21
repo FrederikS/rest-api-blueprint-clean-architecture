@@ -11,7 +11,6 @@ module codes.fdk.blueprint.api.infrastructure.persistence.r2dbc {
     requires reactor.core;
     requires r2dbc.spi;
     requires org.mapstruct;
-    requires java.annotation;
 
     exports codes.fdk.blueprint.api.infrastructure.persistence.r2dbc;
 }

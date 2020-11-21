@@ -1,3 +1,5 @@
+// TODO in subprojects
+
 plugins {
     id 'java'
 }
@@ -7,12 +9,21 @@ java {
     sourceCompatibility = JavaVersion.VERSION_15
 }
 
+configurations.all {
+    exclude group: 'jakarta.annotation', module: 'jakarta.annotation-api'
+}
+
 compileJava {
-    options.compilerArgs += ["--enable-preview"]
+    doFirst {
+        options.compilerArgs += [
+                '--enable-preview',
+                '--module-path', classpath.asPath,
+        ]
+    }
 }
 
 compileTestJava {
-    options.compilerArgs += ["--enable-preview"]
+    options.compilerArgs += ['--enable-preview']
 }
 
 test {

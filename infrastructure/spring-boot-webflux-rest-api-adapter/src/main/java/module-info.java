@@ -11,7 +11,6 @@ module codes.fdk.blueprint.api.infrastructure.rest.webflux {
     requires spring.context;
     requires reactor.core;
     requires org.mapstruct;
-    requires java.annotation;
     requires com.fasterxml.jackson.annotation;
     requires org.reactivestreams;
     requires java.validation;
