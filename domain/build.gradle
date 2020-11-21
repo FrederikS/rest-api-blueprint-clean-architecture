@@ -1,8 +1,12 @@
-apply plugin: 'java-library'
-//TODO remove
-apply plugin: 'org.springframework.boot'
+plugins {
+    id 'java-conventions'
+    id 'java-library'
+}
 
 dependencies {
+    api platform(project(':platform'))
+    implementation platform(project(':platform'))
+    annotationProcessor platform(project(':platform'))
     api "io.projectreactor:reactor-core"
     api 'com.google.code.findbugs:jsr305:3.0.2'
     api 'com.fasterxml.jackson.core:jackson-annotations'
@@ -22,6 +26,4 @@ compileJava {
     ]
 }
 
-//TODO remove
-bootJar.enabled = false
 jar.enabled = true

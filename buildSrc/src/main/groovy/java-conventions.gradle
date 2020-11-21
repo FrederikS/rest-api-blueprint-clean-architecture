@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+java {
+    modularity.inferModulePath = true
+    sourceCompatibility = JavaVersion.VERSION_15
+}
+
+compileJava {
+    options.compilerArgs += ["--enable-preview"]
+}
+
+compileTestJava {
+    options.compilerArgs += ["--enable-preview"]
+}
+
+test {
+    jvmArgs '--enable-preview'
+    useJUnitPlatform()
+}

@@ -1,6 +1,11 @@
-apply plugin: 'org.springframework.boot'
+plugins {
+    id 'java-conventions'
+    id 'org.springframework.boot' version "${springBootVersion}"
+}
 
 dependencies {
+    implementation platform(project(':platform'))
+    annotationProcessor platform(project(':platform'))
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-config'
     implementation project(':infrastructure:spring-boot-r2dbc-persistence-adapter')
@@ -12,13 +17,6 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation(testFixtures(project(':infrastructure:spring-boot-r2dbc-persistence-adapter')))
 }
-
-//TODO fix
-//compileJava {
-//    options.compilerArgs += [
-//            '--module-path', classpath.asPath,
-//    ]
-//}
 
 bootRun {
     jvmArgs '--enable-preview'

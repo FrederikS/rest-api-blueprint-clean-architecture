@@ -1,8 +1,13 @@
-apply plugin: 'java-library'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'java-test-fixtures'
+plugins {
+    id 'java-conventions'
+    id 'java-library'
+    id 'java-test-fixtures'
+    id 'org.springframework.boot' version "${springBootVersion}"
+}
 
 dependencies {
+    implementation platform(project(':platform'))
+    annotationProcessor platform(project(':platform'))
     api project(':domain')
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     runtimeOnly 'io.r2dbc:r2dbc-postgresql'

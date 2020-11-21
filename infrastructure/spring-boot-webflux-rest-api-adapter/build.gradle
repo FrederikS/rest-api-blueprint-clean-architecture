@@ -1,7 +1,12 @@
-apply plugin: 'java-library'
-apply plugin: 'org.springframework.boot'
+plugins {
+    id 'java-conventions'
+    id 'java-library'
+    id 'org.springframework.boot' version "${springBootVersion}"
+}
 
 dependencies {
+    implementation platform(project(':platform'))
+    annotationProcessor platform(project(':platform'))
     api project(':domain')
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.mapstruct:mapstruct'
