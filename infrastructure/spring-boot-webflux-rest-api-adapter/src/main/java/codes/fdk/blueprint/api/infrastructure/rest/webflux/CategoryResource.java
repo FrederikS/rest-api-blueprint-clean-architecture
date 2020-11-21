@@ -4,10 +4,6 @@ import codes.fdk.blueprint.api.domain.command.CreateCategoryCommand;
 import codes.fdk.blueprint.api.domain.model.Category;
 import codes.fdk.blueprint.api.domain.model.CategoryId;
 import codes.fdk.blueprint.api.domain.service.CategoryService;
-import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.GetCategoryResponse;
-import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.ModelMapper;
-import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.PatchCategoryRequest;
-import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.PostCategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -43,7 +39,7 @@ import static org.springframework.util.DigestUtils.md5DigestAsHex;
 
 @RestController
 @RequestMapping("/categories")
-public class CategoryResource {
+class CategoryResource {
 
     private final CategoryService categoryService;
     private final ModelMapper modelMapper;

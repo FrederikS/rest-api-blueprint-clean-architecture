@@ -1,4 +1,4 @@
-package codes.fdk.blueprint.api.infrastructure.rest.webflux.model;
+package codes.fdk.blueprint.api.infrastructure.rest.webflux;
 
 import codes.fdk.blueprint.api.domain.command.CreateCategoryCommand;
 import codes.fdk.blueprint.api.domain.command.UpdateCategoryCommand;
@@ -11,7 +11,7 @@ import static codes.fdk.blueprint.api.domain.command.CreateCategoryCommand.creat
 
 //TODO figure out how to let mapstruct do the work
 @Mapper
-public interface ModelMapper {
+interface ModelMapper {
 
     default CreateCategoryCommand toCreateCommand(PostCategoryRequest request) {
         return createRootCategoryCommand(

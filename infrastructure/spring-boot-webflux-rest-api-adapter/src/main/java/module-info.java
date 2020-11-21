@@ -18,5 +18,4 @@ module codes.fdk.blueprint.api.infrastructure.rest.webflux {
     requires org.hibernate.validator;
 
     exports codes.fdk.blueprint.api.infrastructure.rest.webflux;
-    exports codes.fdk.blueprint.api.infrastructure.rest.webflux.model;
 }

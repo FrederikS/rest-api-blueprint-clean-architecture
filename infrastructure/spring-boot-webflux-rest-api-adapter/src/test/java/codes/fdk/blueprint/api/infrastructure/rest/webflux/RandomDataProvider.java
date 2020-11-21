@@ -1,6 +1,5 @@
 package codes.fdk.blueprint.api.infrastructure.rest.webflux;
 
-import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.PostCategoryRequest;
 import com.github.javafaker.Faker;
 
 import java.text.Normalizer;

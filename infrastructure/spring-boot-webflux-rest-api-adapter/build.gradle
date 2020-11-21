@@ -12,7 +12,7 @@ dependencies {
     implementation 'org.mapstruct:mapstruct'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.6.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor'
-    implementation('org.springframework.boot:spring-boot-starter-hateoas') {
+    api('org.springframework.boot:spring-boot-starter-hateoas') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
     }
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

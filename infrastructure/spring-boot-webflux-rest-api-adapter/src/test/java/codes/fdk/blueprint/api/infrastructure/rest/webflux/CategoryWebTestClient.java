@@ -1,7 +1,6 @@
 package codes.fdk.blueprint.api.infrastructure.rest.webflux;
 
 import codes.fdk.blueprint.api.domain.model.CategoryId;
-import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.PostCategoryRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
