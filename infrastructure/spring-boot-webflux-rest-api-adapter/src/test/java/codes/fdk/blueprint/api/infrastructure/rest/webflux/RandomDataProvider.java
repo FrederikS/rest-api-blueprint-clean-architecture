@@ -47,6 +47,7 @@ final class RandomDataProvider {
         return FAKER.internet().uuid();
     }
 
+    //TODO centralize
     private static final class SlugHelper {
 
         private static final Pattern NONLATIN = Pattern.compile("[^\\w-]");

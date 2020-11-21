@@ -21,9 +21,6 @@ dependencies {
     }
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'com.github.javafaker:javafaker'
-    //TODO remove
-    testImplementation(project(':infrastructure:spring-boot-r2dbc-persistence-adapter'))
-    testImplementation(testFixtures(project(':infrastructure:spring-boot-r2dbc-persistence-adapter')))
 }
 
 compileJava {

@@ -1,6 +1,6 @@
 package codes.fdk.blueprint.api.infrastructure.rest.webflux;
 
-import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.GetCategoryResponse;
+import codes.fdk.blueprint.api.infrastructure.rest.webflux.CategoryWebTestClient.PostCategoryResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -67,11 +66,12 @@ public class CategoryApiValidationTests {
     @DisplayName("Given a root category")
     class RootCategoryGiven {
 
-        private EntityModel<GetCategoryResponse> postCategoryResponse;
+        private PostCategoryResponse postCategoryResponse;
 
         @BeforeEach
         void setUp() {
-            postCategoryResponse = categoryWebTestClient.postCategory(RandomDataProvider.randomPostCategoryRequest()).getResponseBody();
+            postCategoryResponse = categoryWebTestClient.postCategory(RandomDataProvider.randomPostCategoryRequest())
+                                                        .getResponseBody();
         }
 
         @Nested
@@ -84,7 +84,7 @@ public class CategoryApiValidationTests {
             @ParameterizedTest(name = "name = \"{0}\"")
             @DisplayName("then status code 400 should get returned")
             void shouldReturn400(String name) {
-                webTestClient.post().uri("/categories/{id}", postCategoryResponse.getContent().id())
+                webTestClient.post().uri("/categories/{id}", postCategoryResponse.id())
                              .contentType(APPLICATION_JSON)
                              .bodyValue(RandomDataProvider.randomPostCategoryRequestWithName(name))
                              .exchange()
@@ -103,7 +103,7 @@ public class CategoryApiValidationTests {
             @ParameterizedTest(name = "slug = \"{0}\"")
             @DisplayName("then status code 400 should get returned")
             void shouldReturn400(String slug) {
-                webTestClient.post().uri("/categories/{id}", postCategoryResponse.getContent().id())
+                webTestClient.post().uri("/categories/{id}", postCategoryResponse.id())
                              .contentType(APPLICATION_JSON)
                              .bodyValue(RandomDataProvider.randomPostCategoryRequestWithSlug(slug))
                              .exchange()
@@ -120,7 +120,7 @@ public class CategoryApiValidationTests {
             @ParameterizedTest(name = "body = \"{0}\"")
             @DisplayName("then status code 400 should get returned")
             void shouldReturn400(String body) {
-                webTestClient.patch().uri("/categories/{id}", postCategoryResponse.getContent().id())
+                webTestClient.patch().uri("/categories/{id}", postCategoryResponse.id())
                              .contentType(APPLICATION_JSON)
                              .bodyValue(body)
                              .exchange()

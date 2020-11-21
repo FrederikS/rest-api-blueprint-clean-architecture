@@ -1,7 +1,7 @@
 package codes.fdk.blueprint.api.infrastructure.rest.webflux;
 
 import codes.fdk.blueprint.api.domain.model.CategoryId;
-import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.GetCategoryResponse;
+import codes.fdk.blueprint.api.infrastructure.rest.webflux.CategoryWebTestClient.PostCategoryResponse;
 import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.PatchCategoryRequest;
 import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.PostCategoryRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -83,7 +82,7 @@ class CategoryApiTests {
     class RootCategoryGiven {
 
         private PostCategoryRequest rootCategoryRequest;
-        private EntityModel<GetCategoryResponse> rootCategoryResponse;
+        private PostCategoryResponse rootCategoryResponse;
 
         @BeforeEach
         void setUp() {
@@ -138,7 +137,7 @@ class CategoryApiTests {
                              .jsonPath("$.content[0].links").isArray()
                              .jsonPath("$.content[0].links").isNotEmpty()
                              .jsonPath("$.content[0].links[?(@.rel == 'self')].href")
-                             .isEqualTo(categoryHrefFor(rootCategoryResponse.getContent().id()));
+                             .isEqualTo(categoryHrefFor(rootCategoryResponse.id()));
             }
 
             @Test
@@ -151,7 +150,7 @@ class CategoryApiTests {
                              .jsonPath("$.content[0].links").isArray()
                              .jsonPath("$.content[0].links").isNotEmpty()
                              .jsonPath("$.content[0].links[?(@.rel == 'children')].href")
-                             .isEqualTo(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()));
+                             .isEqualTo(childrenCategoryHrefFor(rootCategoryResponse.id()));
             }
 
         }
@@ -163,7 +162,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then status code 200 should get returned")
             void shouldReturn200() {
-                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectStatus().isOk();
@@ -172,7 +171,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then json content type should get returned")
             void shouldReturnJson() {
-                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectHeader().contentType(APPLICATION_JSON);
@@ -181,7 +180,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then an etag header should get returned")
             void shouldReturnEtag() {
-                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectHeader().value(ETAG, v -> assertThat(v).isNotBlank());
@@ -190,7 +189,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then data of post-category-request should be included in json response")
             void shouldReturnCategoryRequestData() {
-                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
@@ -203,7 +202,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then a non-blank id should be included in json response")
             void shouldReturnAnId() {
-                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
@@ -213,7 +212,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then a categories link should be included in json response")
             void shouldContainCategoriesLink() {
-                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
@@ -225,27 +224,27 @@ class CategoryApiTests {
             @Test
             @DisplayName("then a self link should be included in json response")
             void shouldContainSelfLink() {
-                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
                              .jsonPath("$.links").isArray()
                              .jsonPath("$.links").isNotEmpty()
                              .jsonPath("$.links[?(@.rel == 'self')].href")
-                             .isEqualTo(categoryHrefFor(rootCategoryResponse.getContent().id()));
+                             .isEqualTo(categoryHrefFor(rootCategoryResponse.id()));
             }
 
             @Test
             @DisplayName("then a children link should be included in json response")
             void shouldContainChildrenLink() {
-                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(categoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
                              .jsonPath("$.links").isArray()
                              .jsonPath("$.links").isNotEmpty()
                              .jsonPath("$.links[?(@.rel == 'children')].href")
-                             .isEqualTo(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()));
+                             .isEqualTo(childrenCategoryHrefFor(rootCategoryResponse.id()));
             }
 
         }
@@ -260,7 +259,7 @@ class CategoryApiTests {
                 var patchCategoryRequest = new PatchCategoryRequest(!rootCategoryRequest.isVisible());
 
                 webTestClient.patch()
-                             .uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                             .uri(categoryHrefFor(rootCategoryResponse.id()))
                              .bodyValue(patchCategoryRequest)
                              .exchange()
                              .expectStatus().isNoContent();
@@ -272,11 +271,11 @@ class CategoryApiTests {
                 var patchCategoryRequest = new PatchCategoryRequest(!rootCategoryRequest.isVisible());
 
                 webTestClient.patch()
-                             .uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                             .uri(categoryHrefFor(rootCategoryResponse.id()))
                              .bodyValue(patchCategoryRequest)
                              .exchange()
                              .expectHeader()
-                             .valueEquals(CONTENT_LOCATION, categoryHrefFor(rootCategoryResponse.getContent().id()).toString());
+                             .valueEquals(CONTENT_LOCATION, categoryHrefFor(rootCategoryResponse.id()));
             }
 
             @Test
@@ -284,7 +283,7 @@ class CategoryApiTests {
             void patchCategory() {
                 var patchCategoryRequest = new PatchCategoryRequest(!rootCategoryRequest.isVisible());
 
-                var patchResponse = webTestClient.patch().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                var patchResponse = webTestClient.patch().uri(categoryHrefFor(rootCategoryResponse.id()))
                                                  .bodyValue(patchCategoryRequest)
                                                  .exchange()
                                                  .expectBody()
@@ -307,7 +306,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then 201 status code should get returned")
             void shouldReturn201() {
-                webTestClient.post().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.post().uri(categoryHrefFor(rootCategoryResponse.id()))
                              .contentType(APPLICATION_JSON)
                              .bodyValue(RandomDataProvider.randomPostCategoryRequest())
                              .exchange()
@@ -317,7 +316,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then location header to created category should get returned")
             void shouldReturnLocationHeader() {
-                webTestClient.post().uri(categoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.post().uri(categoryHrefFor(rootCategoryResponse.id()))
                              .contentType(APPLICATION_JSON)
                              .bodyValue(RandomDataProvider.randomPostCategoryRequest())
                              .exchange()
@@ -332,17 +331,16 @@ class CategoryApiTests {
     @DisplayName("Given a root category and child category")
     class RootAndChildCategoryGiven {
 
-        private EntityModel<GetCategoryResponse> rootCategoryResponse;
+        private PostCategoryResponse rootCategoryResponse;
         private PostCategoryRequest childCategoryRequest;
-        private EntityModel<GetCategoryResponse> childCategoryResponse;
+        private PostCategoryResponse childCategoryResponse;
 
         @BeforeEach
         void setUp() {
             rootCategoryResponse = categoryWebTestClient.postCategory(RandomDataProvider.randomPostCategoryRequest()).getResponseBody();
 
-            final CategoryId parentId = rootCategoryResponse.getContent().id();
             childCategoryRequest = RandomDataProvider.randomPostCategoryRequest();
-            childCategoryResponse = categoryWebTestClient.postChildCategory(childCategoryRequest, parentId)
+            childCategoryResponse = categoryWebTestClient.postChildCategory(childCategoryRequest, rootCategoryResponse.id())
                                                          .getResponseBody();
         }
 
@@ -353,24 +351,24 @@ class CategoryApiTests {
             @Test
             @DisplayName("then a parentId should be included in json response")
             void shouldContainParentId() {
-                webTestClient.get().uri(categoryHrefFor(childCategoryResponse.getContent().id()))
+                webTestClient.get().uri(categoryHrefFor(childCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
-                             .jsonPath("$.parentId").isEqualTo(rootCategoryResponse.getContent().id().value());
+                             .jsonPath("$.parentId").isEqualTo(rootCategoryResponse.id().value());
             }
 
             @Test
             @DisplayName("then a parent link should be included in json response")
             void shouldContainParentLink() {
-                webTestClient.get().uri(categoryHrefFor(childCategoryResponse.getContent().id()))
+                webTestClient.get().uri(categoryHrefFor(childCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
                              .jsonPath("$.links").isArray()
                              .jsonPath("$.links").isNotEmpty()
                              .jsonPath("$.links[?(@.rel == 'parent')].href")
-                             .isEqualTo(categoryHrefFor(rootCategoryResponse.getContent().id()));
+                             .isEqualTo(categoryHrefFor(rootCategoryResponse.id()));
             }
 
         }
@@ -382,7 +380,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then status code 200 should get returned")
             void shouldReturn200() {
-                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectStatus().isOk();
@@ -391,7 +389,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then json content type should get returned")
             void shouldReturnJson() {
-                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectHeader().contentType(APPLICATION_JSON);
@@ -400,20 +398,20 @@ class CategoryApiTests {
             @Test
             @DisplayName("then json response should contain self link")
             void shouldContainSelfLink() {
-                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
                              .jsonPath("$.links").isArray()
                              .jsonPath("$.links").isNotEmpty()
                              .jsonPath("$.links[?(@.rel == 'self')].href")
-                             .isEqualTo(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()));
+                             .isEqualTo(childrenCategoryHrefFor(rootCategoryResponse.id()));
             }
 
             @Test
             @DisplayName("then a list of children categories should get returned")
             void shouldReturnChildrenList() {
-                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
@@ -426,21 +424,21 @@ class CategoryApiTests {
             @DisplayName("then the children category in list should contain data from post-category-request")
             void shouldReturnChildrenData() {
                 webTestClient.get()
-                             .uri(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()))
+                             .uri(childrenCategoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
                              .jsonPath("$.content[0].name").isEqualTo(childCategoryRequest.name())
                              .jsonPath("$.content[0].slug").isEqualTo(childCategoryRequest.slug())
                              .jsonPath("$.content[0].parentId")
-                             .isEqualTo(rootCategoryResponse.getContent().id().value())
+                             .isEqualTo(rootCategoryResponse.id().value())
                              .jsonPath("$.content[0].isVisible").isEqualTo(childCategoryRequest.isVisible());
             }
 
             @Test
             @DisplayName("then the children category in list should contain categories link")
             void shouldContainCategoriesLinkInChildrenData() {
-                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
@@ -452,40 +450,40 @@ class CategoryApiTests {
             @Test
             @DisplayName("then the children category in list should contain self link")
             void shouldContainSelfLinkInChildrenData() {
-                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
                              .jsonPath("$.content[0].links").isArray()
                              .jsonPath("$.content[0].links").isNotEmpty()
                              .jsonPath("$.content[0].links[?(@.rel == 'self')].href")
-                             .isEqualTo(categoryHrefFor(childCategoryResponse.getContent().id()));
+                             .isEqualTo(categoryHrefFor(childCategoryResponse.id()));
             }
 
             @Test
             @DisplayName("then the children category in list should contain children link")
             void shouldContainChildrenLinkInChildrenData() {
-                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
                              .jsonPath("$.content[0].links").isArray()
                              .jsonPath("$.content[0].links").isNotEmpty()
                              .jsonPath("$.content[0].links[?(@.rel == 'children')].href")
-                             .isEqualTo(childrenCategoryHrefFor(childCategoryResponse.getContent().id()));
+                             .isEqualTo(childrenCategoryHrefFor(childCategoryResponse.id()));
             }
 
             @Test
             @DisplayName("then the children category in list should contain parent link")
             void shouldContainParentLinkInChildrenData() {
-                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.getContent().id()))
+                webTestClient.get().uri(childrenCategoryHrefFor(rootCategoryResponse.id()))
                              .accept(APPLICATION_JSON)
                              .exchange()
                              .expectBody()
                              .jsonPath("$.content[0].links").isArray()
                              .jsonPath("$.content[0].links").isNotEmpty()
                              .jsonPath("$.content[0].links[?(@.rel == 'parent')].href")
-                             .isEqualTo(categoryHrefFor(rootCategoryResponse.getContent().id()));
+                             .isEqualTo(categoryHrefFor(rootCategoryResponse.id()));
             }
 
         }
@@ -575,7 +573,7 @@ class CategoryApiTests {
         void setUp() {
             var rootCategoryResponse = categoryWebTestClient.postCategory(RandomDataProvider.randomPostCategoryRequest());
             eTag = rootCategoryResponse.getResponseHeaders().getETag();
-            categoryId = rootCategoryResponse.getResponseBody().getContent().id();
+            categoryId = rootCategoryResponse.getResponseBody().id();
         }
 
         @Nested
@@ -626,7 +624,7 @@ class CategoryApiTests {
         @BeforeEach
         void setUp() {
             var rootCategoryResponse = categoryWebTestClient.postCategory(RandomDataProvider.randomPostCategoryRequest());
-            categoryId = rootCategoryResponse.getResponseBody().getContent().id();
+            categoryId = rootCategoryResponse.getResponseBody().id();
         }
 
         @Nested

@@ -1,11 +1,9 @@
 package codes.fdk.blueprint.api.infrastructure.rest.webflux;
 
 import codes.fdk.blueprint.api.domain.model.CategoryId;
-import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.GetCategoryResponse;
 import codes.fdk.blueprint.api.infrastructure.rest.webflux.model.PostCategoryRequest;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -13,7 +11,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
@@ -26,17 +23,17 @@ class CategoryWebTestClient {
         this.webTestClient = webTestClient;
     }
 
-    EntityExchangeResult<EntityModel<GetCategoryResponse>> postCategory(PostCategoryRequest request) {
+    EntityExchangeResult<PostCategoryResponse> postCategory(PostCategoryRequest request) {
         return postCategory(request, URI.create("/categories"));
     }
 
-    EntityExchangeResult<EntityModel<GetCategoryResponse>> postChildCategory(PostCategoryRequest request,
-                                                                             CategoryId parentId) {
+    EntityExchangeResult<PostCategoryResponse> postChildCategory(PostCategoryRequest request,
+                                                                 CategoryId parentId) {
         return postCategory(request, UriComponentsBuilder.fromPath("/categories/{id}").build(parentId));
     }
 
-    private EntityExchangeResult<EntityModel<GetCategoryResponse>> postCategory(PostCategoryRequest request,
-                                                                                URI uri) {
+    private EntityExchangeResult<PostCategoryResponse> postCategory(PostCategoryRequest request,
+                                                                    URI uri) {
         var postCategoryResponse = webTestClient.post()
                                                 .uri(uri)
                                                 .contentType(APPLICATION_JSON)
@@ -50,9 +47,10 @@ class CategoryWebTestClient {
                             .accept(APPLICATION_JSON)
                             .exchange()
                             .expectStatus().isOk()
-                            .expectBody(new ParameterizedTypeReference<EntityModel<GetCategoryResponse>>() {})
-                            .value(body -> assertThat(body).isNotNull())
+                            .expectBody(PostCategoryResponse.class)
                             .returnResult();
     }
+
+    static record PostCategoryResponse(@JsonProperty("id") CategoryId id) {}
 
 }
