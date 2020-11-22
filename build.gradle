@@ -43,12 +43,12 @@ subprojects {
 
         compileJava {
             doFirst {
-                options.compilerArgs += ['--module-path', classpath.asPath]
+                options.compilerArgs += [
+                        '--module-path', classpath.asPath,
+                        '--enable-preview',
+                        '-Xlint:-module'
+                ]
             }
-            options.compilerArgs += [
-                    '--enable-preview',
-                    '-Xlint:-module'
-            ]
         }
 
         compileTestJava {
