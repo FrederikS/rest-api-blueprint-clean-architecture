@@ -4,5 +4,3 @@ include 'domain'
 include 'infrastructure:spring-boot-r2dbc-persistence-adapter'
 include 'infrastructure:spring-boot-webflux-rest-api-adapter'
 include 'application:spring-boot'
-include 'platform'
-

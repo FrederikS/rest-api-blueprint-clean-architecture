@@ -6,14 +6,10 @@ plugins {
 }
 
 dependencies {
-    implementation platform(project(':platform'))
-    annotationProcessor platform(project(':platform'))
     api project(':domain')
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     runtimeOnly 'io.r2dbc:r2dbc-postgresql'
-    implementation 'io.projectreactor:reactor-core'
     implementation 'org.mapstruct:mapstruct'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations'
     annotationProcessor 'org.mapstruct:mapstruct-processor'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

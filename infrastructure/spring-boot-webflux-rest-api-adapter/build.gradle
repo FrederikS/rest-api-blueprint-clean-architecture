@@ -5,8 +5,6 @@ plugins {
 }
 
 dependencies {
-    implementation platform(project(':platform'))
-    annotationProcessor platform(project(':platform'))
     api project(':domain')
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.mapstruct:mapstruct'
@@ -19,7 +17,6 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'com.github.javafaker:javafaker'
 }
 

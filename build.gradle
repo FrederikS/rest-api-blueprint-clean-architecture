@@ -1,18 +1,40 @@
+plugins {
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE' apply false
+}
+
 allprojects {
     group = 'codes.fdk.blueprint.api'
     version = '0.0.1-SNAPSHOT'
 }
 
 subprojects {
+    apply plugin: 'io.spring.dependency-management'
 
     repositories {
         mavenCentral()
     }
 
     plugins.withType(JavaPlugin).configureEach {
+
         java {
             modularity.inferModulePath = true
             sourceCompatibility = JavaVersion.VERSION_15
+        }
+
+        ext {
+            mapstructVersion = '1.4.1.Final'
+        }
+
+        dependencyManagement {
+            imports {
+                mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+                mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8'
+            }
+            dependencies {
+                dependency "org.mapstruct:mapstruct:${mapstructVersion}"
+                dependency "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+                dependency 'com.github.javafaker:javafaker:1.0.2'
+            }
         }
 
         configurations.all {
@@ -37,6 +59,7 @@ subprojects {
             jvmArgs '--enable-preview'
             useJUnitPlatform()
         }
+
     }
 
 }

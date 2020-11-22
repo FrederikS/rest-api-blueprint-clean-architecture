@@ -4,9 +4,6 @@ plugins {
 }
 
 dependencies {
-    api platform(project(':platform'))
-    implementation platform(project(':platform'))
-    annotationProcessor platform(project(':platform'))
     api "io.projectreactor:reactor-core"
     api 'com.google.code.findbugs:jsr305:3.0.2'
     api 'com.fasterxml.jackson.core:jackson-annotations'
