@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface CategoryService extends CategoryCommandHandler {
+    
     Mono<Category> byId(CategoryId id);
     Flux<Category> all();
     Flux<Category> children(CategoryId parentId);
