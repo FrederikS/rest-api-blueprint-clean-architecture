@@ -29,7 +29,7 @@ class CategoryServiceTest {
     private CategoryRepository categoryRepository;
 
     @InjectMocks
-    private CategoryService categoryService;
+    private DefaultCategoryService categoryService;
 
     @Nested
     @DisplayName("Given the category for id doesn't exist")

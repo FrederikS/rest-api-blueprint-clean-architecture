@@ -19,7 +19,7 @@ public class CategoryApiApplication {
 
     @Bean
     public CategoryService categoryService(CategoryRepository categoryRepository) {
-        return new CategoryService(categoryRepository);
+        return CategoryService.create(categoryRepository);
     }
 
 }

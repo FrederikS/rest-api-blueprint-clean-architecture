@@ -20,7 +20,7 @@ public class RestApiWebfluxTestModule {
 
     @Bean
     public CategoryService categoryService(CategoryRepository categoryRepository) {
-        return new CategoryService(categoryRepository);
+        return CategoryService.create(categoryRepository);
     }
 
     @Component
