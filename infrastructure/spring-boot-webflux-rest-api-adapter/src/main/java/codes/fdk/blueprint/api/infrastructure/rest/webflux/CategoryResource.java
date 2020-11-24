@@ -42,13 +42,13 @@ import static org.springframework.util.DigestUtils.md5DigestAsHex;
 class CategoryResource {
 
     private final CategoryService categoryService;
-    private final ModelMapper modelMapper;
+    private final CommandMapper commandMapper;
 
     @Autowired
     public CategoryResource(CategoryService categoryService,
-                            ModelMapper modelMapper) {
+                            CommandMapper commandMapper) {
         this.categoryService = categoryService;
-        this.modelMapper = modelMapper;
+        this.commandMapper = commandMapper;
     }
 
     @GetMapping
@@ -62,7 +62,7 @@ class CategoryResource {
     public Mono<ResponseEntity<?>> getCategory(@PathVariable CategoryId id, ServerWebExchange exchange) {
         return categoryService.byId(id)
                               .switchIfEmpty(Mono.error(() -> new ResponseStatusException(NOT_FOUND)))
-                              .map(modelMapper::toResponse)
+                              .map(commandMapper::toResponse)
                               .flatMap(CategoryResource::toEntityModel)
                               .map(e -> {
                                   final String eTag = md5DigestAsHex(Integer.toString(e.hashCode()).getBytes());
@@ -83,7 +83,7 @@ class CategoryResource {
 
     @PostMapping
     public Mono<ResponseEntity<?>> postCategory(@Valid @RequestBody Mono<PostCategoryRequest> request) {
-        return request.map(modelMapper::toCreateCommand)
+        return request.map(commandMapper::toCreateCommand)
                       .flatMap(this::saveAndReturnCreatedWithLocation);
     }
 
@@ -92,7 +92,7 @@ class CategoryResource {
                                                      @Valid @RequestBody Mono<PostCategoryRequest> body) {
         return categoryService.byId(id)
                               .switchIfEmpty(Mono.error(() -> new ResponseStatusException(NOT_FOUND)))
-                              .then(body.map(b -> modelMapper.toCreateCommand(id, b)))
+                              .then(body.map(b -> commandMapper.toCreateCommand(id, b)))
                               .flatMap(this::saveAndReturnCreatedWithLocation);
     }
 
@@ -101,7 +101,7 @@ class CategoryResource {
                                                   @Valid @RequestBody Mono<PatchCategoryRequest> body) {
         return categoryService.byId(id)
                               .switchIfEmpty(Mono.error(() -> new ResponseStatusException(NOT_FOUND)))
-                              .then(body.map(b -> modelMapper.toUpdateCommand(id, b)))
+                              .then(body.map(b -> commandMapper.toUpdateCommand(id, b)))
                               .flatMap(categoryService::update)
                               .map(Category::id)
                               .flatMap(CategoryResource::categorySelfLink)
@@ -111,7 +111,7 @@ class CategoryResource {
     }
 
     private Mono<CollectionModel<EntityModel<GetCategoryResponse>>> toCollectionModel(Flux<Category> categories) {
-        return categories.map(modelMapper::toResponse)
+        return categories.map(commandMapper::toResponse)
                          .flatMap(CategoryResource::toEntityModel)
                          .collectList()
                          .map(CollectionModel::of);

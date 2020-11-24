@@ -11,7 +11,7 @@ import static codes.fdk.blueprint.api.domain.command.CreateCategoryCommand.creat
 
 //TODO figure out how to let mapstruct do the work
 @Mapper
-interface ModelMapper {
+interface CommandMapper {
 
     default CreateCategoryCommand toCreateCommand(PostCategoryRequest request) {
         return createRootCategoryCommand(
