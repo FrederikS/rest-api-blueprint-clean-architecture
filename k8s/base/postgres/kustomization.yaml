@@ -1,0 +1,4 @@
+resources:
+  - volume.yaml
+  - statefulset.yaml
+  - service.yaml

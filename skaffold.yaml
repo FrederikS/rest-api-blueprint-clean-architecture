@@ -1,0 +1,23 @@
+apiVersion: skaffold/v2beta9
+kind: Config
+metadata:
+  name: category-api
+profiles:
+- name: spring
+  build:
+    artifacts:
+      - image: blueprint/category-api
+        custom:
+          buildCommand: ./gradlew application:spring-boot:bootBuildImage --imageName=$IMAGE
+          dependencies:
+            paths:
+              - application/spring-boot/src/main/**
+              - application/spring-boot/build.gradle
+              - infrastructure/spring-boot-*/src/main/**
+              - infrastructure/spring-boot-*/build.gradle
+    local:
+      push: false
+  deploy:
+    kustomize:
+      paths:
+      - k8s/spring

@@ -1,0 +1,16 @@
+bases:
+  - ../base
+  - ../base/postgres
+
+namePrefix: spring-
+
+configMapGenerator:
+  - name: category-api-config
+    files:
+      - application.yml
+
+secretGenerator:
+  - name: postgres-secret
+    literals:
+      - pg.username=postgres
+      - pg.password=postgres

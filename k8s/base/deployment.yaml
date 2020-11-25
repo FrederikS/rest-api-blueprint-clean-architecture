@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: category-api
+  labels:
+    app: category-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: category-api
+      labels:
+        app: category-api
+    spec:
+      containers:
+        - name: category-api
+          image: blueprint/category-api
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: JAVA_OPTS
+              value: --enable-preview
+          volumeMounts:
+            - mountPath: /workspace/config
+              name: app-config
+            - mountPath: /etc/secrets/postgres
+              name: postgres-secret
+      volumes:
+        - name: postgres-secret
+          secret:
+            secretName: postgres-secret
+        - name: app-config
+          configMap:
+            name: category-api-config
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: category-api
