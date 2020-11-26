@@ -10,6 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
@@ -43,7 +44,7 @@ class CategoryWebTestClient {
 
         //noinspection ConstantConditions
         return webTestClient.get().uri(postCategoryResponse.getResponseHeaders().getLocation())
-                            .accept(APPLICATION_JSON)
+                            .accept(HAL_JSON)
                             .exchange()
                             .expectStatus().isOk()
                             .expectBody(PostCategoryResponse.class)

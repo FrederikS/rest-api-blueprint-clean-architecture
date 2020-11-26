@@ -6,7 +6,6 @@ import codes.fdk.blueprint.api.domain.service.CategoryService;
 import codes.fdk.blueprint.api.domain.spi.CategoryRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -19,11 +18,10 @@ import java.util.UUID;
 public class RestApiWebfluxTestModule {
 
     @Bean
-    public CategoryService categoryService(CategoryRepository categoryRepository) {
-        return CategoryService.create(categoryRepository);
+    public CategoryService categoryService() {
+        return CategoryService.create(new InMemoryCategoryRepository());
     }
 
-    @Component
     static class InMemoryCategoryRepository implements CategoryRepository {
 
         static final Map<CategoryId, Category> STORE = new HashMap<>();
