@@ -15,6 +15,7 @@ module codes.fdk.blueprint.api.infrastructure.rest.webflux {
     requires org.reactivestreams;
     requires java.validation;
     requires org.hibernate.validator;
+    requires io.swagger.v3.oas.annotations;
 
     exports codes.fdk.blueprint.api.infrastructure.rest.webflux;
 }
