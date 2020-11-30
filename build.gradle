@@ -29,6 +29,7 @@ subprojects {
             imports {
                 mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
                 mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8'
+                mavenBom 'org.testcontainers:testcontainers-bom:1.15.0'
             }
             dependencies {
                 dependency "org.mapstruct:mapstruct:${mapstructVersion}"

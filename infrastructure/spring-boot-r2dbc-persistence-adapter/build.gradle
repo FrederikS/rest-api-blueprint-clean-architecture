@@ -17,7 +17,7 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'com.github.javafaker:javafaker'
     testFixturesApi 'org.junit.jupiter:junit-jupiter-api'
-    testFixturesImplementation 'org.testcontainers:postgresql:1.14.3'
+    testFixturesImplementation 'org.testcontainers:postgresql'
 }
 
 compileJava {
