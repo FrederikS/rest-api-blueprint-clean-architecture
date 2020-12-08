@@ -1,64 +1,52 @@
 package codes.fdk.blueprint.api.infrastructure.persistence.postgres
 
+import codes.fdk.blueprint.api.infrastructure.persistence.postgres.PostgresContainerExtension.Companion.postgreSQLContainer
 import codes.fdk.blueprint.api.infrastructure.persistence.postgres.RandomDataProvider.randomCategory
 import codes.fdk.blueprint.api.infrastructure.persistence.postgres.RandomDataProvider.randomCategoryWithId
 import codes.fdk.blueprint.api.infrastructure.persistence.postgres.RandomDataProvider.randomChildCategory
 import codes.fdk.blueprint.api.infrastructure.persistence.postgres.RandomDataProvider.randomId
+import io.vertx.config.ConfigRetriever
+import io.vertx.core.DeploymentOptions
+import io.vertx.core.Vertx
 import io.vertx.junit5.VertxExtension
-import io.vertx.kotlin.coroutines.await
+import io.vertx.junit5.VertxTestContext
 import io.vertx.pgclient.PgConnectOptions
 import io.vertx.pgclient.PgPool
 import io.vertx.sqlclient.PoolOptions
-import io.vertx.sqlclient.SqlClient
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.from
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.testcontainers.containers.PostgreSQLContainer
 
-@ExtendWith(VertxExtension::class)
-internal class PostgresCategoryEntityRepositoryTest {
+@ExtendWith(VertxExtension::class, PostgresContainerExtension::class)
+internal class CategoryEntityRepositoryTest {
 
-    companion object {
-        private val container = PostgreSQLContainer<Nothing>("postgres:13-alpine").apply {
-            start()
+    private lateinit var categoryRepository: CategoryEntityRepository
+
+    @BeforeEach
+    internal fun setUp(vertx: Vertx, context: VertxTestContext) {
+        val connectOptions = PgConnectOptions().apply {
+            host = postgreSQLContainer.containerIpAddress
+            port = postgreSQLContainer.firstMappedPort
+            user = postgreSQLContainer.username
+            password = postgreSQLContainer.password
+            database = postgreSQLContainer.databaseName
         }
 
-        private val pgClient: SqlClient by lazy {
-            val connectOptions = PgConnectOptions().apply {
-                host = container.containerIpAddress
-                port = container.firstMappedPort
-                user = container.username
-                password = container.password
-                database = container.databaseName
-            }
+        categoryRepository = PostgresCategoryEntityRepository(PgPool.pool(vertx, connectOptions, PoolOptions()))
 
-            PgPool.pool(connectOptions, PoolOptions())
-        }
-
-        private val categoryRepository = PostgresCategoryEntityRepository(pgClient)
-
-        @JvmStatic
-        @BeforeAll
-        internal fun init() {
-            val schema = PostgresCategoryEntityRepository::class.java.getResource("/schema.sql").readText()
-            runBlocking { pgClient.query(schema).execute().await() }
-        }
-
-    }
-
-    @AfterEach
-    internal fun tearDown() {
-        runBlocking { pgClient.query("TRUNCATE TABLE ${CategoryEntityRepository.TABLE_NAME};").execute().await() }
+        ConfigRetriever.create(vertx)
+            .config
+            .compose { vertx.deployVerticle(PostgresPersistenceVerticle(), DeploymentOptions().setConfig(it)) }
+            .onComplete(context.succeedingThenComplete())
+            .onFailure { context.failNow(it) }
     }
 
     @Nested

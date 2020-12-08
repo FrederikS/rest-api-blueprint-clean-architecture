@@ -1,4 +1,4 @@
-package codes.fdk.blueprint.api.domain.service;
+package codes.fdk.blueprint.api.domain;
 
 import codes.fdk.blueprint.api.domain.model.Category;
 import codes.fdk.blueprint.api.domain.model.CategoryId;
@@ -14,7 +14,7 @@ public class RandomDataProvider {
 
     private static final Faker FAKER = new Faker();
 
-    static Category randomCategory() {
+    public static Category randomCategory() {
         final String name = FAKER.commerce().department();
 
         return new Category(
@@ -26,20 +26,36 @@ public class RandomDataProvider {
         );
     }
 
-    static Category randomCategoryWithId() {
-        final Category randomEntity = randomCategory();
+    public static Category randomCategoryWithId() {
+        final Category randomCategory = randomCategory();
 
         return new Category(
                 CategoryId.of(FAKER.internet().uuid()),
-                randomEntity.name(),
-                randomEntity.slug(),
-                randomEntity.parentId(),
-                randomEntity.isVisible()
+                randomCategory.name(),
+                randomCategory.slug(),
+                randomCategory.parentId(),
+                randomCategory.isVisible()
         );
     }
 
-    static String randomUUID() {
+    public static Category randomChildCategory() {
+        final Category randomCategory = randomCategory();
+
+        return new Category(
+                randomCategory.id(),
+                randomCategory.name(),
+                randomCategory.slug(),
+                randomId(),
+                randomCategory.isVisible()
+        );
+    }
+
+    public static String randomUUID() {
         return FAKER.internet().uuid();
+    }
+
+    public static CategoryId randomId() {
+        return CategoryId.of(randomUUID());
     }
 
     private static final class SlugHelper {

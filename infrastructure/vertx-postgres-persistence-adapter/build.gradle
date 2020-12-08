@@ -1,22 +1,33 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.jetbrains.kotlin.kapt' version '1.4.10'
     id 'java-library'
+}
+
+ext {
+    vertxVersion = '4.0.0.CR2'
 }
 
 dependencies {
     api project(':domain')
     implementation platform('org.jetbrains.kotlin:kotlin-bom')
-    implementation platform('io.vertx:vertx-dependencies:4.0.0.CR2')
+    implementation platform("io.vertx:vertx-dependencies:${vertxVersion}")
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
     implementation 'io.vertx:vertx-lang-kotlin-coroutines'
     implementation 'io.vertx:vertx-pg-client'
+    implementation 'io.vertx:vertx-config'
+    implementation 'org.mapstruct:mapstruct'
+    kapt 'org.mapstruct:mapstruct-processor'
     runtimeOnly 'ch.qos.logback:logback-classic'
 
+    testImplementation(testFixtures(project(":domain")))
     testImplementation 'io.vertx:vertx-junit5'
+    testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.testcontainers:junit-jupiter'
@@ -31,6 +42,13 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
                 '-XXLanguage:-NewInference',
                 '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
         ]
+    }
+}
+
+kapt {
+    javacOptions {
+        option("--enable-preview")
+        option("--module-path", compileJava.classpath.asPath)
     }
 }
 

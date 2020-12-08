@@ -15,8 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static codes.fdk.blueprint.api.domain.service.RandomDataProvider.randomCategoryWithId;
-import static codes.fdk.blueprint.api.domain.service.RandomDataProvider.randomUUID;
+import static codes.fdk.blueprint.api.domain.RandomDataProvider.randomCategoryWithId;
+import static codes.fdk.blueprint.api.domain.RandomDataProvider.randomUUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;

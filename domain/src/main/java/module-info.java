@@ -6,6 +6,6 @@ module codes.fdk.blueprint.api.domain {
 
     exports codes.fdk.blueprint.api.domain.model;
     exports codes.fdk.blueprint.api.domain.command to codes.fdk.blueprint.api.infrastructure.rest.webflux;
-    exports codes.fdk.blueprint.api.domain.spi to codes.fdk.blueprint.api.infrastructure.persistence.r2dbc, codes.fdk.blueprint.api.application.spring;
+    exports codes.fdk.blueprint.api.domain.spi to codes.fdk.blueprint.api.infrastructure.persistence.r2dbc, codes.fdk.blueprint.api.application.spring, codes.fdk.blueprint.api.infrastructure.persistence.postgres;
     exports codes.fdk.blueprint.api.domain.service to codes.fdk.blueprint.api.infrastructure.rest.webflux, codes.fdk.blueprint.api.application.spring;
 }

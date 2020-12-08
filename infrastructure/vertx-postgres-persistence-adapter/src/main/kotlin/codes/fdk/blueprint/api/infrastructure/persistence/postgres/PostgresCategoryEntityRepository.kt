@@ -66,8 +66,8 @@ class PostgresCategoryEntityRepository(private val pgClient: SqlClient) : Catego
             .mapping(categoryEntityMapper)
             .execute()
             .onFailure { LOG.error("Error while trying to select all entities.", it) }
-            .map { it.toFlow() }
             .await()
+            .toFlow()
     }
 
     override suspend fun findById(id: CategoryId): CategoryEntity? {
@@ -117,6 +117,7 @@ class PostgresCategoryEntityRepository(private val pgClient: SqlClient) : Catego
             .await()
     }
 
+    //TODO use row-stream?
     private fun <T> RowSet<T>.toFlow(): Flow<T> {
         return flow<T> {
             emitAll(asFlow())
