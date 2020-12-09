@@ -15,7 +15,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.UUID
 
-class CategoryRepositoryEBProxyHandler(
+internal class CategoryRepositoryEBProxyHandler(
     private val vertx: Vertx,
     private val categoryEntityRepositoryAdapter: CategoryEntityRepositoryAdapter
 ) : Handler<Message<Any>> {

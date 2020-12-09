@@ -4,7 +4,7 @@ import codes.fdk.blueprint.api.domain.model.CategoryId
 import io.github.serpro69.kfaker.Faker
 import java.util.UUID
 
-object RandomDataProvider {
+internal object RandomDataProvider {
 
     private val FAKER = Faker()
 

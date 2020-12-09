@@ -5,10 +5,10 @@ import org.mapstruct.Mapper
 import org.mapstruct.factory.Mappers
 
 @Mapper
-abstract class CategoryEntityMapper {
+internal abstract class CategoryEntityMapper {
 
     companion object {
-        val INSTANCE = Mappers.getMapper(CategoryEntityMapper::class.java)
+        val INSTANCE: CategoryEntityMapper = Mappers.getMapper(CategoryEntityMapper::class.java)
     }
 
     fun toEntity(category: Category): CategoryEntity {

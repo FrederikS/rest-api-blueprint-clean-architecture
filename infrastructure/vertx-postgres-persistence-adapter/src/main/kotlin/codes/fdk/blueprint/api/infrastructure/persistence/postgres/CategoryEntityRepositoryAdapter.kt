@@ -9,7 +9,7 @@ import kotlinx.coroutines.reactor.mono
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
-class CategoryEntityRepositoryAdapter(private val categoryEntityRepository: CategoryEntityRepository) : CategoryRepository {
+internal class CategoryEntityRepositoryAdapter(private val categoryEntityRepository: CategoryEntityRepository) : CategoryRepository {
 
     private val categoryEntityMapper = CategoryEntityMapper.INSTANCE;
 

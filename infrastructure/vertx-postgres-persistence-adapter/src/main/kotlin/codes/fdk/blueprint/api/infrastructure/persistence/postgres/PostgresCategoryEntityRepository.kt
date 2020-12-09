@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 import java.util.Objects
 import java.util.UUID
 
-class PostgresCategoryEntityRepository(private val pgClient: SqlClient) : CategoryEntityRepository {
+internal class PostgresCategoryEntityRepository(private val pgClient: SqlClient) : CategoryEntityRepository {
 
     companion object {
         private val LOG = LoggerFactory.getLogger(PostgresCategoryEntityRepository::class.java)

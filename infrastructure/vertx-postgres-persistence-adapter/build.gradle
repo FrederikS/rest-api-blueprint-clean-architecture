@@ -18,15 +18,15 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
-    implementation 'io.vertx:vertx-lang-kotlin-coroutines'
+    api 'io.vertx:vertx-lang-kotlin-coroutines'
     implementation 'io.vertx:vertx-pg-client'
-    implementation 'io.vertx:vertx-config'
     implementation 'org.mapstruct:mapstruct'
     kapt 'org.mapstruct:mapstruct-processor'
     runtimeOnly 'ch.qos.logback:logback-classic'
 
     testImplementation(testFixtures(project(":domain")))
     testImplementation 'io.vertx:vertx-junit5'
+    testImplementation 'io.vertx:vertx-config'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.testcontainers:postgresql'

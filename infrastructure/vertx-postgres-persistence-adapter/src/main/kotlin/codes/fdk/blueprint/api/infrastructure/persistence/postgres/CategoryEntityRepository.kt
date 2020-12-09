@@ -3,7 +3,7 @@ package codes.fdk.blueprint.api.infrastructure.persistence.postgres
 import codes.fdk.blueprint.api.domain.model.CategoryId
 import kotlinx.coroutines.flow.Flow
 
-interface CategoryEntityRepository {
+internal interface CategoryEntityRepository {
 
     companion object {
         const val TABLE_NAME = "categories"

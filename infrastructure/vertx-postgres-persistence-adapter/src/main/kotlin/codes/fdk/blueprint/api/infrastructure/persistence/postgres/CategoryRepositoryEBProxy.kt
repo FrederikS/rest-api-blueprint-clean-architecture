@@ -75,7 +75,7 @@ class CategoryRepositoryEBProxy(private val vertx: Vertx) : CategoryRepository {
         }
     }
 
-    enum class Action(val value: String) {
+    internal enum class Action(val value: String) {
         Save("save"),
         FindAll("find-all"),
         FindById("find-by-id"),

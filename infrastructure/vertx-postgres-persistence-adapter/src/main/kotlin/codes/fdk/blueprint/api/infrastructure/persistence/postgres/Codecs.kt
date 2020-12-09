@@ -8,7 +8,7 @@ import io.vertx.core.eventbus.impl.codecs.JsonObjectMessageCodec
 import io.vertx.core.eventbus.impl.codecs.StringMessageCodec
 import io.vertx.core.json.JsonObject
 
-class CategoryCodec(private val delegate: JsonObjectMessageCodec) : MessageCodec<Category, Category> {
+internal class CategoryCodec(private val delegate: JsonObjectMessageCodec) : MessageCodec<Category, Category> {
 
     override fun encodeToWire(buffer: Buffer, s: Category) {
         delegate.encodeToWire(buffer, JsonObject.mapFrom(s))
@@ -43,7 +43,7 @@ class CategoryCodec(private val delegate: JsonObjectMessageCodec) : MessageCodec
 }
 
 // TODO make it work for interface type
-class CategoryIdCodec(private val delegate: StringMessageCodec) : MessageCodec<CategoryId, CategoryId> {
+internal class CategoryIdCodec(private val delegate: StringMessageCodec) : MessageCodec<CategoryId, CategoryId> {
 
     override fun encodeToWire(buffer: Buffer, s: CategoryId) {
         delegate.encodeToWire(buffer, s.value())

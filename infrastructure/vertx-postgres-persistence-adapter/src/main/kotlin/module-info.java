@@ -11,4 +11,6 @@ module codes.fdk.blueprint.api.infrastructure.persistence.postgres {
     requires io.vertx.kotlin.coroutines;
     requires reactor.core;
     requires org.mapstruct;
+
+    exports codes.fdk.blueprint.api.infrastructure.persistence.postgres;
 }
