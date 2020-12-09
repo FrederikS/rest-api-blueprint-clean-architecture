@@ -72,7 +72,7 @@ subprojects {
         dependencyManagement {
             imports {
                 mavenBom "org.jetbrains.kotlin:kotlin-bom:${kotlinVersion}"
-                mavenBom 'io.vertx:vertx-dependencies:4.0.0.CR2'
+                mavenBom 'io.vertx:vertx-dependencies:4.0.0'
             }
         }
 
