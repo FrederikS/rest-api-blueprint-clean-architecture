@@ -1,0 +1,18 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+}
+
+dependencies {
+    api project(':domain')
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+    runtimeOnly 'ch.qos.logback:logback-classic'
+
+    testImplementation 'io.vertx:vertx-junit5'
+    testImplementation 'org.assertj:assertj-core'
+}
