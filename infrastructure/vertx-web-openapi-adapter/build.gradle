@@ -1,6 +1,8 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
     id 'java-library'
+    //TODO remove
+    id 'application'
 }
 
 dependencies {
@@ -11,8 +13,21 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+    api 'io.vertx:vertx-lang-kotlin-coroutines'
+    implementation 'io.vertx:vertx-web-openapi'
+    implementation 'org.webjars:swagger-ui:3.37.2'
     runtimeOnly 'ch.qos.logback:logback-classic'
 
     testImplementation 'io.vertx:vertx-junit5'
     testImplementation 'org.assertj:assertj-core'
+}
+
+//TODO remove
+application {
+    mainClassName = 'io.vertx.core.Launcher'
+}
+
+//TODO remove
+run {
+    args = ['run', 'codes.fdk.blueprint.api.infrastructure.web.openapi.WebOpenapiVerticle', "--launcher-class=${application.mainClassName}"]
 }
