@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "OpenAPI definition",
+    "title": "Category API",
     "version": "v0"
   },
   "servers": [
@@ -13,9 +13,6 @@
   "paths": {
     "/categories/{id}": {
       "get": {
-        "tags": [
-          "default-category-controller"
-        ],
         "summary": "Get a single category for an ID",
         "operationId": "getCategory",
         "parameters": [
@@ -32,9 +29,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/hal+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EntityModelGetCategoryResponse"
+                  "$ref": "#/components/schemas/CategoryResponse"
                 }
               }
             }
@@ -42,9 +39,6 @@
         }
       },
       "post": {
-        "tags": [
-          "default-category-controller"
-        ],
         "summary": "Create a child category under another category",
         "operationId": "postChildCategory",
         "parameters": [
@@ -74,9 +68,6 @@
         }
       },
       "patch": {
-        "tags": [
-          "default-category-controller"
-        ],
         "summary": "Update a specific category",
         "operationId": "updateCategory",
         "parameters": [
@@ -108,18 +99,15 @@
     },
     "/categories": {
       "get": {
-        "tags": [
-          "default-category-controller"
-        ],
         "summary": "Get all root categories",
         "operationId": "getRootCategories",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "application/hal+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CollectionModelEntityModelGetCategoryResponse"
+                  "$ref": "#/components/schemas/CategoriesResponse"
                 }
               }
             }
@@ -127,9 +115,6 @@
         }
       },
       "post": {
-        "tags": [
-          "default-category-controller"
-        ],
         "summary": "Create a root category",
         "operationId": "postCategory",
         "requestBody": {
@@ -151,9 +136,6 @@
     },
     "/categories/{id}/children": {
       "get": {
-        "tags": [
-          "default-category-controller"
-        ],
         "summary": "Get all child categories for an ID",
         "operationId": "getChildCategories",
         "parameters": [
@@ -170,9 +152,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/hal+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CollectionModelEntityModelGetCategoryResponse"
+                  "$ref": "#/components/schemas/CategoriesResponse"
                 }
               }
             }
@@ -213,21 +195,13 @@
           }
         }
       },
-      "CollectionModelEntityModelGetCategoryResponse": {
-        "type": "object",
-        "properties": {
-          "_links": {
-            "$ref": "#/components/schemas/Links"
-          },
-          "content": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EntityModelGetCategoryResponse"
-            }
-          }
+      "CategoriesResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/CategoryResponse"
         }
       },
-      "EntityModelGetCategoryResponse": {
+      "CategoryResponse": {
         "type": "object",
         "properties": {
           "id": {
@@ -244,47 +218,6 @@
           },
           "isVisible": {
             "type": "boolean"
-          },
-          "_links": {
-            "$ref": "#/components/schemas/Links"
-          }
-        }
-      },
-      "Links": {
-        "type": "object",
-        "additionalProperties": {
-          "$ref": "#/components/schemas/Link"
-        }
-      },
-      "Link": {
-        "type": "object",
-        "properties": {
-          "rel": {
-            "type": "string"
-          },
-          "href": {
-            "type": "string"
-          },
-          "hreflang": {
-            "type": "string"
-          },
-          "media": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "deprecation": {
-            "type": "string"
-          },
-          "profile": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
           }
         }
       }
