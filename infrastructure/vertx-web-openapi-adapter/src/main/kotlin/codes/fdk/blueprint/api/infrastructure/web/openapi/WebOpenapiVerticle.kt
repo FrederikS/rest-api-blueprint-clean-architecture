@@ -3,11 +3,15 @@ package codes.fdk.blueprint.api.infrastructure.web.openapi
 import io.vertx.core.Context
 import io.vertx.core.Vertx
 import io.vertx.ext.web.Router
+import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.handler.LoggerHandler
 import io.vertx.ext.web.handler.StaticHandler
+import io.vertx.ext.web.openapi.Operation
 import io.vertx.ext.web.openapi.RouterBuilder
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.await
+import io.vertx.kotlin.coroutines.dispatcher
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
 class WebOpenapiVerticle : CoroutineVerticle() {
@@ -34,7 +38,7 @@ class WebOpenapiVerticle : CoroutineVerticle() {
         router.route("/swagger-ui/*").handler(StaticHandler.create("META-INF/resources/webjars/swagger-ui/3.37.2"))
 
         val api = RouterBuilder.create(vertx, "openapi.json").await()
-        api.operation("getRootCategories").handler(apiHandler.rootCategories())
+        api.operation("getRootCategories").coroutineHandler(apiHandler.rootCategories())
 
         router.mountSubRouter("/", api.createRouter())
 
@@ -43,6 +47,18 @@ class WebOpenapiVerticle : CoroutineVerticle() {
             .listen(8080)
             .onSuccess { LOG.info("Running on port: ${it.actualPort()}") }
             .await()
+    }
+
+    private fun Operation.coroutineHandler(fn: suspend (RoutingContext) -> Unit): Operation {
+        return handler { ctx ->
+            launch(ctx.vertx().dispatcher()) {
+                try {
+                    fn(ctx)
+                } catch (e: Exception) {
+                    ctx.fail(e)
+                }
+            }
+        }
     }
 
 }

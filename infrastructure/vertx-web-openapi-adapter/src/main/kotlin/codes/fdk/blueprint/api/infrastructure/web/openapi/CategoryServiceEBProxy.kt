@@ -24,7 +24,7 @@ class CategoryServiceEBProxy(private val vertx: Vertx) : CategoryService {
     }
 
     override fun all(): Flux<Category> {
-        TODO("Not yet implemented")
+        return Flux.empty()
     }
 
     override fun children(parentId: CategoryId): Flux<Category> {
