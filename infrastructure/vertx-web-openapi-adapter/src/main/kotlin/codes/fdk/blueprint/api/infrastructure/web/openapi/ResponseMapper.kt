@@ -1,15 +1,8 @@
 package codes.fdk.blueprint.api.infrastructure.web.openapi
 
 import codes.fdk.blueprint.api.domain.model.Category
-import org.mapstruct.Mapper
-import org.mapstruct.factory.Mappers
 
-@Mapper
-abstract class ResponseMapper {
-
-    companion object {
-        val INSTANCE: ResponseMapper = Mappers.getMapper(ResponseMapper::class.java)
-    }
+object ResponseMapper {
 
     fun toResponse(category: Category): CategoryResponse {
         return CategoryResponse(

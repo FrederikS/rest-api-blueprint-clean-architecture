@@ -39,6 +39,7 @@ class WebOpenapiVerticle : CoroutineVerticle() {
 
         val api = RouterBuilder.create(vertx, "openapi.json").await()
         api.operation("getRootCategories").coroutineHandler(apiHandler.rootCategories())
+        api.operation("postCategory").coroutineHandler(apiHandler.postCategory())
 
         router.mountSubRouter("/", api.createRouter())
 

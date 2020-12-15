@@ -1,6 +1,5 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
-    id 'org.jetbrains.kotlin.kapt'
     id 'java-library'
     //TODO remove
     id 'application'
@@ -18,20 +17,10 @@ dependencies {
     implementation 'io.vertx:vertx-web-openapi'
     implementation 'org.webjars:swagger-ui:3.37.2'
     runtimeOnly 'ch.qos.logback:logback-classic'
-    implementation 'org.mapstruct:mapstruct'
-    kapt 'org.mapstruct:mapstruct-processor'
 
     testImplementation 'io.vertx:vertx-junit5'
     testImplementation 'io.vertx:vertx-web-client'
     testImplementation 'org.assertj:assertj-core'
-}
-
-//TODO centralize
-kapt {
-    javacOptions {
-        option("--enable-preview")
-        option("--module-path", compileJava.classpath.asPath)
-    }
 }
 
 //TODO remove
