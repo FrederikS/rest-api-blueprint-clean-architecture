@@ -1,9 +1,12 @@
 package codes.fdk.blueprint.api.infrastructure.web.openapi
 
+import codes.fdk.blueprint.api.domain.stub.ResetInMemoryRepoExtension
 import io.vertx.core.Future
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpHeaders.ACCEPT
 import io.vertx.core.http.HttpHeaders.CONTENT_TYPE
+import io.vertx.core.http.HttpHeaders.LOCATION
+import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.client.HttpResponse
 import io.vertx.ext.web.client.WebClient
 import io.vertx.ext.web.client.WebClientOptions
@@ -16,7 +19,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(VertxExtension::class)
+@ExtendWith(VertxExtension::class, ResetInMemoryRepoExtension::class)
 internal class WebOpenapiVerticleTest {
 
     companion object {
@@ -29,6 +32,10 @@ internal class WebOpenapiVerticleTest {
                 defaultHost = "localhost"
                 defaultPort = 8080
             })
+
+            vertx.eventBus()
+                .localConsumer<JsonObject>(CategoryServiceEBProxy.ADDRESS)
+                .handler(CategoryServiceEBProxyHandler(vertx))
 
             vertx.deployVerticle(WebOpenapiVerticle())
                 .onComplete(context.succeedingThenComplete())
@@ -73,6 +80,33 @@ internal class WebOpenapiVerticleTest {
                 }
         }
 
+    }
+
+    @Nested
+    @DisplayName("When POST /categories")
+    internal inner class PostCategory {
+
+        @Test
+        @DisplayName("then 201 status code should get returned")
+        fun shouldReturn201(context: VertxTestContext) {
+            webClient.post("/categories")
+                .putHeader(CONTENT_TYPE.toString(), "application/json")
+                .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                .assertThat(context) {
+                    assertThat(it.statusCode()).isEqualTo(201)
+                }
+        }
+
+        @Test
+        @DisplayName("then location header to created category should get returned")
+        fun shouldReturnLocationHeader(context: VertxTestContext) {
+            webClient.post("/categories")
+                .putHeader(CONTENT_TYPE.toString(), "application/json")
+                .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                .assertThat(context) {
+                    assertThat(it.getHeader(LOCATION.toString())).matches("^\\/categories\\/[^\\s\\/]+$")
+                }
+        }
     }
 
     private fun <T> Future<HttpResponse<T>>.assertThat(context: VertxTestContext, verify: (HttpResponse<T>) -> Unit) {

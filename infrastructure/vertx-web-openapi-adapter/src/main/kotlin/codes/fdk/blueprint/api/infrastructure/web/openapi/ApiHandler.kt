@@ -30,11 +30,10 @@ class ApiHandler(private val categoryService: CategoryService) {
             .let(CommandMapper::toCommand)
             .let(categoryService::create)
             .awaitSingle()
-            .let(ResponseMapper::toResponse)
             .also {
                 ctx.response()
                     .setStatusCode(201)
-                    .putHeader(LOCATION, "/categories/${it.id}")
+                    .putHeader(LOCATION, "/categories/${it.id()}")
                     .end()
             }
     }

@@ -4,6 +4,7 @@ import io.vertx.core.Context
 import io.vertx.core.Vertx
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
+import io.vertx.ext.web.handler.ErrorHandler
 import io.vertx.ext.web.handler.LoggerHandler
 import io.vertx.ext.web.handler.StaticHandler
 import io.vertx.ext.web.openapi.Operation
@@ -32,7 +33,7 @@ class WebOpenapiVerticle : CoroutineVerticle() {
         super.start()
 
         val router = Router.router(vertx)
-        router.route().handler(LoggerHandler.create())
+        router.route().handler(LoggerHandler.create()).failureHandler(LoggingErrorHandler(ErrorHandler.create(vertx)))
         router.route("/").handler { it.redirect("/swagger-ui/index.html?url=/api-spec") }
         router.route("/api-spec").handler(StaticHandler.create("openapi.json"))
         router.route("/swagger-ui/*").handler(StaticHandler.create("META-INF/resources/webjars/swagger-ui/3.37.2"))
