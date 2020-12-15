@@ -1,5 +1,6 @@
 package codes.fdk.blueprint.api.infrastructure.rest.webflux;
 
+import codes.fdk.blueprint.api.domain.stub.ResetInMemoryRepoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 

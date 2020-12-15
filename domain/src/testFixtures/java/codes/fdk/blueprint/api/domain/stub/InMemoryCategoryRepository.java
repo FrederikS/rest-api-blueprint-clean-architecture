@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class InMemoryCategoryRepository implements CategoryRepository {
 
-    public static final Map<CategoryId, Category> STORE = new HashMap<>();
+    static final Map<CategoryId, Category> STORE = new HashMap<>();
 
     @Override
     public Mono<Category> save(Category category) {

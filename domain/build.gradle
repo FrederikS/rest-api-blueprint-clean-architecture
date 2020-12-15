@@ -14,6 +14,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core"
     testImplementation "org.mockito:mockito-junit-jupiter"
     testImplementation "io.projectreactor:reactor-test"
+    testFixturesApi 'org.junit.jupiter:junit-jupiter'
     testFixturesImplementation 'com.github.javafaker:javafaker'
 }
 
