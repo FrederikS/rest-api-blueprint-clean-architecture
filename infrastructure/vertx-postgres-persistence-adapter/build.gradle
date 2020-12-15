@@ -35,7 +35,3 @@ kapt {
         option("--module-path", compileJava.classpath.asPath)
     }
 }
-
-test {
-    jvmArgs += '-Dvertx.disableDnsResolver=true'
-}
