@@ -12,8 +12,10 @@ import io.vertx.ext.web.client.WebClient
 import io.vertx.ext.web.client.WebClientOptions
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -107,6 +109,70 @@ internal class WebOpenapiVerticleTest {
                     assertThat(it.getHeader(LOCATION.toString())).matches("^\\/categories\\/[^\\s\\/]+$")
                 }
         }
+    }
+
+    @Nested
+    @DisplayName("Given a root category")
+    internal inner class RootCategoryGiven {
+
+        private lateinit var rootCategoryRequest: PostCategoryRequest
+
+        @BeforeEach
+        fun setUp(context: VertxTestContext) {
+            rootCategoryRequest = RandomDataProvider.randomPostCategoryRequest()
+
+            webClient.post("/categories")
+                .putHeader(CONTENT_TYPE.toString(), "application/json")
+                .sendJson(rootCategoryRequest)
+                .onSuccess { context.completeNow() }
+                .onFailure { context.failNow(it) }
+        }
+
+
+        @Nested
+        @DisplayName("when GET /categories")
+        internal inner class GetRootCategories {
+
+            @Test
+            @DisplayName("then status code 200 should get returned")
+            fun shouldReturn200(context: VertxTestContext) {
+                webClient.get("/categories")
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.statusCode()).isEqualTo(200)
+                    }
+            }
+
+            @Test
+            @DisplayName("then json content type should get returned")
+            fun shouldReturnJson(context: VertxTestContext) {
+                webClient.get("/categories")
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.getHeader(CONTENT_TYPE.toString())).isEqualTo("application/json")
+                    }
+            }
+
+            @Test
+            @DisplayName("then the root category in list should contain data from post-category-request")
+            fun shouldReturnRootCategoryData(context: VertxTestContext) {
+                webClient.get("/categories")
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThatJson(it.bodyAsString()) {
+                            isArray.hasSize(1)
+                            inPath("$[0].name").isEqualTo(rootCategoryRequest.name)
+                            inPath("$[0].slug").isEqualTo(rootCategoryRequest.slug)
+                            inPath("$[0].visible").isEqualTo(rootCategoryRequest.visible)
+                        }
+                    }
+            }
+
+        }
+
     }
 
     private fun <T> Future<HttpResponse<T>>.assertThat(context: VertxTestContext, verify: (HttpResponse<T>) -> Unit) {

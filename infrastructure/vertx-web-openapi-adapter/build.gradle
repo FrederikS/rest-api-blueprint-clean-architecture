@@ -5,6 +5,10 @@ plugins {
     id 'application'
 }
 
+ext {
+    jsonUnitVersion = '2.22.0'
+}
+
 dependencies {
     api project(':domain')
     implementation 'org.slf4j:slf4j-api'
@@ -23,6 +27,8 @@ dependencies {
     testImplementation 'io.vertx:vertx-junit5'
     testImplementation 'io.vertx:vertx-web-client'
     testImplementation 'org.assertj:assertj-core'
+    testImplementation "net.javacrumbs.json-unit:json-unit-assertj:$jsonUnitVersion"
+    testImplementation "net.javacrumbs.json-unit:json-unit-json-path:$jsonUnitVersion"
 }
 
 //TODO remove
