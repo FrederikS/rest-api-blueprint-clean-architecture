@@ -1,7 +1,5 @@
 package codes.fdk.blueprint.api.infrastructure.web.openapi
 
-import codes.fdk.blueprint.api.domain.command.CreateCategoryCommand
-import codes.fdk.blueprint.api.domain.command.UpdateCategoryCommand
 import codes.fdk.blueprint.api.domain.model.Category
 import codes.fdk.blueprint.api.domain.model.CategoryId
 import codes.fdk.blueprint.api.domain.service.CategoryService
@@ -13,14 +11,12 @@ import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy
 import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action.FindChildren
 import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action.Update
 import io.vertx.core.Handler
-import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
-import io.vertx.core.json.Json
 import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import reactor.core.publisher.Mono
 
-class CategoryServiceEBProxyHandler(private val vertx: Vertx) : Handler<Message<JsonObject>> {
+class CategoryServiceEBProxyHandler : Handler<Message<JsonObject>> {
 
     private val categoryService = CategoryService.create(InMemoryCategoryRepository())
 
@@ -37,17 +33,17 @@ class CategoryServiceEBProxyHandler(private val vertx: Vertx) : Handler<Message<
 
     private fun createCategory(message: Message<JsonObject>) {
         message.body()
-            .mapToCreateCategoryCommand()
+            .let(JsonMapper::toCreateCategoryCommand)
             .let(categoryService::create)
-            .map(Companion::fromCategory)
+            .map(JsonMapper::fromCategory)
             .subscribe(message::reply) { message.fail(500, it.message) }
     }
 
     private fun updateCategory(message: Message<JsonObject>) {
         message.body()
-            .mapTo(UpdateCategoryCommand::class.java)
+            .let(JsonMapper::toUpdateCategoryCommand)
             .let(categoryService::update)
-            .map(JsonObject::mapFrom)
+            .map(JsonMapper::fromCategory)
             .subscribe(message::reply) { message.fail(500, it.message) }
     }
 
@@ -56,13 +52,14 @@ class CategoryServiceEBProxyHandler(private val vertx: Vertx) : Handler<Message<
             .mapTo(CategoryId::class.java)
             .let(categoryService::byId)
             .switchIfEmpty(Mono.empty<Category>().doOnSubscribe { message.fail(404, "Not Found.") })
-            .map(JsonObject::mapFrom)
+            .map(JsonMapper::fromCategory)
             .subscribe(message::reply) { message.fail(500, it.message) }
     }
 
     private fun findAllCategories(message: Message<JsonObject>) {
         categoryService.all()
-            .reduce(JsonArray(), { acc, value -> acc.add(value) })
+            .map(JsonMapper::fromCategory)
+            .reduce(JsonArray(), { array, category -> array.add(category) })
             .subscribe(message::reply) { message.fail(500, it.message) }
     }
 
@@ -70,31 +67,9 @@ class CategoryServiceEBProxyHandler(private val vertx: Vertx) : Handler<Message<
         message.body()
             .mapTo(CategoryId::class.java)
             .let(categoryService::children)
-            .reduce(JsonArray(), { acc, value -> acc.add(value) })
+            .map(JsonMapper::fromCategory)
+            .reduce(JsonArray(), { array, category -> array.add(category) })
             .subscribe(message::reply) { message.fail(500, it.message) }
-    }
-
-    private fun JsonObject.mapToCreateCategoryCommand(): CreateCategoryCommand {
-        return CreateCategoryCommand(
-            getString("name"),
-            getString("slug"),
-            getString("parentId")?.let { CategoryId.of(it) },
-            getBoolean("visible")
-        )
-    }
-
-    companion object {
-
-        private fun fromCategory(category: Category): JsonObject {
-            return JsonObject(mapOf(
-                "id" to Json.encode(category.id()),
-                "name" to category.name(),
-                "slug" to category.slug(),
-                "parentId" to Json.encode(category.parentId()),
-                "visible" to category.visible()
-            ))
-        }
-
     }
 
 }

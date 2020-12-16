@@ -32,20 +32,20 @@ class CategoryServiceEBProxy(private val vertx: Vertx) : CategoryService {
     override fun create(command: CreateCategoryCommand): Mono<Category> {
         return mono {
             vertx.eventBus()
-                .request<JsonObject>(ADDRESS, command.toJson(), action(Create))
+                .request<JsonObject>(ADDRESS, JsonMapper.fromCreateCategoryCommand(command), action(Create))
                 .await()
                 .body()
-                .toCategory()
+                .let(JsonMapper::toCategory)
         }
     }
 
     override fun update(command: UpdateCategoryCommand): Mono<Category> {
         return mono {
             vertx.eventBus()
-                .request<JsonObject>(ADDRESS, JsonObject.mapFrom(command), action(Update))
+                .request<JsonObject>(ADDRESS, JsonMapper.fromUpdateCategoryCommand(command), action(Update))
                 .await()
                 .body()
-                .mapTo(Category::class.java)
+                .let(JsonMapper::toCategory)
         }
     }
 
@@ -56,7 +56,7 @@ class CategoryServiceEBProxy(private val vertx: Vertx) : CategoryService {
                     .request<JsonObject>(ADDRESS, JsonObject.mapFrom(id), action(FindById))
                     .await()
                     .body()
-                    .mapTo(Category::class.java)
+                    .let(JsonMapper::toCategory)
             } catch (e: ReplyException) {
                 if (e.failureCode() != 404) throw e else null
             }
@@ -70,7 +70,7 @@ class CategoryServiceEBProxy(private val vertx: Vertx) : CategoryService {
                 .await()
                 .body()
                 .map { it as JsonObject }
-                .map { it.mapTo(Category::class.java) }
+                .map(JsonMapper::toCategory)
                 .forEach { send(it) }
         }
     }
@@ -82,7 +82,7 @@ class CategoryServiceEBProxy(private val vertx: Vertx) : CategoryService {
                 .await()
                 .body()
                 .map { it as JsonObject }
-                .map { it.mapTo(Category::class.java) }
+                .map(JsonMapper::toCategory)
                 .forEach { send(it) }
         }
     }
@@ -100,25 +100,6 @@ class CategoryServiceEBProxy(private val vertx: Vertx) : CategoryService {
             }
         }
 
-    }
-
-    //TODO outsource
-    private fun CreateCategoryCommand.toJson(): JsonObject {
-        return JsonObject(mapOf(
-            "name" to name(),
-            "slug" to slug(),
-            "visible" to visible()
-        ))
-    }
-
-    private fun JsonObject.toCategory(): Category {
-        return Category(
-            getString("id")?.let { CategoryId.of(it) },
-            getString("name"),
-            getString("slug"),
-            getString("parentId")?.let { CategoryId.of(it) },
-            getBoolean("visible")
-        )
     }
 
 }

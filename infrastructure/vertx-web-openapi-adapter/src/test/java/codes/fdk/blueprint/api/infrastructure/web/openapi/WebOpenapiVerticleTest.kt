@@ -35,7 +35,7 @@ internal class WebOpenapiVerticleTest {
 
             vertx.eventBus()
                 .localConsumer<JsonObject>(CategoryServiceEBProxy.ADDRESS)
-                .handler(CategoryServiceEBProxyHandler(vertx))
+                .handler(CategoryServiceEBProxyHandler())
 
             vertx.deployVerticle(WebOpenapiVerticle())
                 .onComplete(context.succeedingThenComplete())
