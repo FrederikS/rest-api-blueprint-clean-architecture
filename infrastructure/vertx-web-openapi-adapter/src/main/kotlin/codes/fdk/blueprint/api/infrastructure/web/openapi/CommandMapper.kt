@@ -8,7 +8,7 @@ object CommandMapper {
         return CreateCategoryCommand.createRootCategoryCommand(
             request.name,
             request.slug,
-            request.isVisible
+            request.visible
         )
     }
 

@@ -30,7 +30,7 @@ internal class PostgresCategoryEntityRepository(private val pgClient: SqlClient)
             SET name       = $2,
                 slug       = $3,
                 parent_id  = $4,
-                is_visible = $5
+                visible    = $5
             WHERE id = $1
             RETURNING *;
         """.trimIndent()
@@ -41,7 +41,7 @@ internal class PostgresCategoryEntityRepository(private val pgClient: SqlClient)
                 name = row.getString("name"),
                 slug = row.getString("slug"),
                 parentId = fromUUID(row.getUUID("parent_id")),
-                isVisible = row.getBoolean("is_visible")
+                visible = row.getBoolean("visible")
             )
         }
 
@@ -95,7 +95,7 @@ internal class PostgresCategoryEntityRepository(private val pgClient: SqlClient)
     private suspend fun insert(entity: CategoryEntity): CategoryEntity {
         return pgClient.preparedQuery(INSERT_STATEMENT)
             .mapping(categoryEntityMapper)
-            .execute(Tuple.of(entity.name, entity.slug, toUUID(entity.parentId), entity.isVisible))
+            .execute(Tuple.of(entity.name, entity.slug, toUUID(entity.parentId), entity.visible))
             .onFailure { LOG.error("Error while trying to insert entity {}", entity, it) }
             .map { it.first() }
             .await()
@@ -106,7 +106,7 @@ internal class PostgresCategoryEntityRepository(private val pgClient: SqlClient)
 
         return pgClient.preparedQuery(UPDATE_STATEMENT)
             .mapping(categoryEntityMapper)
-            .execute(Tuple.of(toUUID(entity.id), entity.name, entity.slug, toUUID(entity.parentId), entity.isVisible))
+            .execute(Tuple.of(toUUID(entity.id), entity.name, entity.slug, toUUID(entity.parentId), entity.visible))
             .onFailure { LOG.error("Error while trying to update entity {}", entity, it) }
             .map {
                 when (it.rowCount() == 1) {

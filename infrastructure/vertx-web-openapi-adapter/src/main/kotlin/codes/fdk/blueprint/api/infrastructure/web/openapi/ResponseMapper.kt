@@ -10,7 +10,7 @@ object ResponseMapper {
             name = category.name(),
             slug = category.slug(),
             parentId = category.parentId(),
-            isVisible = category.isVisible
+            visible = category.visible()
         )
     }
 

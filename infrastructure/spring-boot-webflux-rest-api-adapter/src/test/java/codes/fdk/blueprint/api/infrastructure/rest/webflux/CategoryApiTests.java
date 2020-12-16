@@ -127,8 +127,8 @@ class CategoryApiTests {
                              .isEqualTo(rootCategoryRequest.slug())
                              .jsonPath("$._embedded.getCategoryResponseList[0].parentId")
                              .doesNotExist()
-                             .jsonPath("$._embedded.getCategoryResponseList[0].isVisible")
-                             .isEqualTo(rootCategoryRequest.isVisible());
+                             .jsonPath("$._embedded.getCategoryResponseList[0].visible")
+                             .isEqualTo(rootCategoryRequest.visible());
             }
 
             @Test
@@ -197,7 +197,7 @@ class CategoryApiTests {
                              .jsonPath("$.name").isEqualTo(rootCategoryRequest.name())
                              .jsonPath("$.slug").isEqualTo(rootCategoryRequest.slug())
                              .jsonPath("$.parentId").doesNotExist()
-                             .jsonPath("$.isVisible").isEqualTo(rootCategoryRequest.isVisible());
+                             .jsonPath("$.visible").isEqualTo(rootCategoryRequest.visible());
             }
 
             @Test
@@ -251,7 +251,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then status code 204 should get returned")
             void shouldReturn200() {
-                var patchCategoryRequest = new PatchCategoryRequest(!rootCategoryRequest.isVisible());
+                var patchCategoryRequest = new PatchCategoryRequest(!rootCategoryRequest.visible());
 
                 webTestClient.patch()
                              .uri(categoryHrefFor(rootCategoryResponse.id()))
@@ -263,7 +263,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then content-location header to patched category should get returned")
             void shouldReturnLocationHeaderWithCategoryURLofPatchedItem() {
-                var patchCategoryRequest = new PatchCategoryRequest(!rootCategoryRequest.isVisible());
+                var patchCategoryRequest = new PatchCategoryRequest(!rootCategoryRequest.visible());
 
                 webTestClient.patch()
                              .uri(categoryHrefFor(rootCategoryResponse.id()))
@@ -276,7 +276,7 @@ class CategoryApiTests {
             @Test
             @DisplayName("then categories visibility should get updated")
             void patchCategory() {
-                var patchCategoryRequest = new PatchCategoryRequest(!rootCategoryRequest.isVisible());
+                var patchCategoryRequest = new PatchCategoryRequest(!rootCategoryRequest.visible());
 
                 var patchResponse = webTestClient.patch().uri(categoryHrefFor(rootCategoryResponse.id()))
                                                  .bodyValue(patchCategoryRequest)
@@ -289,7 +289,7 @@ class CategoryApiTests {
                              .exchange()
                              .expectStatus().isOk()
                              .expectBody()
-                             .jsonPath("$.isVisible").isEqualTo(patchCategoryRequest.isVisible());
+                             .jsonPath("$.visible").isEqualTo(patchCategoryRequest.visible());
             }
 
         }
@@ -429,8 +429,8 @@ class CategoryApiTests {
                              .isEqualTo(childCategoryRequest.slug())
                              .jsonPath("$._embedded.getCategoryResponseList[0].parentId")
                              .isEqualTo(rootCategoryResponse.id().value())
-                             .jsonPath("$._embedded.getCategoryResponseList[0].isVisible")
-                             .isEqualTo(childCategoryRequest.isVisible());
+                             .jsonPath("$._embedded.getCategoryResponseList[0].visible")
+                             .isEqualTo(childCategoryRequest.visible());
             }
 
             @Test

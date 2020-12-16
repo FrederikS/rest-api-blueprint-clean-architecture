@@ -4,4 +4,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 
-record PatchCategoryRequest(@JsonProperty("isVisible") @NotNull Boolean isVisible) {}
+record PatchCategoryRequest(@JsonProperty("visible") @NotNull Boolean visible) {}

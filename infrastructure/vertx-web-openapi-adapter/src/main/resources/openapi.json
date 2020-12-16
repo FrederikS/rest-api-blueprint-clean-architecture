@@ -179,18 +179,18 @@
             "pattern": "[^ ]+",
             "type": "string"
           },
-          "isVisible": {
+          "visible": {
             "type": "boolean"
           }
         }
       },
       "PatchCategoryRequest": {
         "required": [
-          "isVisible"
+          "visible"
         ],
         "type": "object",
         "properties": {
-          "isVisible": {
+          "visible": {
             "type": "boolean"
           }
         }
@@ -216,7 +216,7 @@
           "parentId": {
             "type": "string"
           },
-          "isVisible": {
+          "visible": {
             "type": "boolean"
           }
         }

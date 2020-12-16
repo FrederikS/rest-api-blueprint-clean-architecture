@@ -17,7 +17,7 @@ internal abstract class CategoryEntityMapper {
             category.name(),
             category.slug(),
             category.parentId(),
-            category.isVisible
+            category.visible()
         )
     }
 
@@ -27,7 +27,7 @@ internal abstract class CategoryEntityMapper {
             entity.name,
             entity.slug,
             entity.parentId,
-            entity.isVisible
+            entity.visible
         )
     }
 

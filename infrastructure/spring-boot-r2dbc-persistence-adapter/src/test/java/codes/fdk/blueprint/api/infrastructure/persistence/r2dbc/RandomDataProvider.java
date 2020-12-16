@@ -33,7 +33,7 @@ public class RandomDataProvider {
                 randomEntity.name(),
                 randomEntity.slug(),
                 randomEntity.parentId(),
-                randomEntity.isVisible()
+                randomEntity.visible()
         );
     }
 
@@ -45,7 +45,7 @@ public class RandomDataProvider {
                 randomEntity.name(),
                 randomEntity.slug(),
                 CategoryId.of(FAKER.internet().uuid()),
-                randomEntity.isVisible()
+                randomEntity.visible()
         );
     }
 

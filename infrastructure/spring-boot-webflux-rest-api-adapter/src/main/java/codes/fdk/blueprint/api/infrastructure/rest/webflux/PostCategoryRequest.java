@@ -7,4 +7,4 @@ import javax.validation.constraints.Pattern;
 
 record PostCategoryRequest(@JsonProperty("name") @NotBlank String name,
                            @JsonProperty("slug") @Pattern(regexp = "[^\s]+") @NotBlank String slug,
-                           @JsonProperty("isVisible") boolean isVisible) {}
+                           @JsonProperty("visible") boolean visible) {}

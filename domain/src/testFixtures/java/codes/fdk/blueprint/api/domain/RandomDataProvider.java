@@ -34,7 +34,7 @@ public class RandomDataProvider {
                 randomCategory.name(),
                 randomCategory.slug(),
                 randomCategory.parentId(),
-                randomCategory.isVisible()
+                randomCategory.visible()
         );
     }
 
@@ -46,7 +46,7 @@ public class RandomDataProvider {
                 randomCategory.name(),
                 randomCategory.slug(),
                 randomId(),
-                randomCategory.isVisible()
+                randomCategory.visible()
         );
     }
 

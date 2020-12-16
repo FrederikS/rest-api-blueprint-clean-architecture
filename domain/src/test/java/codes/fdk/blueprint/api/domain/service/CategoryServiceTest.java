@@ -66,7 +66,7 @@ class CategoryServiceTest {
         void updateShouldInvokeRepoSaveWithUpdatedProperties() {
             final UpdateCategoryCommand updateCommand = new UpdateCategoryCommand(
                     categoryToUpdate.id(),
-                    !categoryToUpdate.isVisible()
+                    !categoryToUpdate.visible()
             );
 
             StepVerifier.create(categoryService.update(updateCommand))
@@ -78,7 +78,7 @@ class CategoryServiceTest {
                     categoryToUpdate.name(),
                     categoryToUpdate.slug(),
                     categoryToUpdate.parentId(),
-                    updateCommand.isVisible()
+                    updateCommand.visible()
             )));
         }
 

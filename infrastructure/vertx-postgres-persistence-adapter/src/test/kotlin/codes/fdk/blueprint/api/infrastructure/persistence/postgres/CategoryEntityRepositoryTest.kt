@@ -77,7 +77,7 @@ internal class CategoryEntityRepositoryTest {
                 .returns(categoryToSave.name, from(CategoryEntity::name))
                 .returns(categoryToSave.slug, from(CategoryEntity::slug))
                 .returns(categoryToSave.parentId, from(CategoryEntity::parentId))
-                .returns(categoryToSave.isVisible, from(CategoryEntity::isVisible))
+                .returns(categoryToSave.visible, from(CategoryEntity::visible))
         }
 
         @Test
@@ -165,7 +165,7 @@ internal class CategoryEntityRepositoryTest {
                     .returns(updatedCategory.name, from(CategoryEntity::name))
                     .returns(updatedCategory.slug, from(CategoryEntity::slug))
                     .returns(updatedCategory.parentId, from(CategoryEntity::parentId))
-                    .returns(updatedCategory.isVisible, from(CategoryEntity::isVisible))
+                    .returns(updatedCategory.visible, from(CategoryEntity::visible))
             }
 
         }

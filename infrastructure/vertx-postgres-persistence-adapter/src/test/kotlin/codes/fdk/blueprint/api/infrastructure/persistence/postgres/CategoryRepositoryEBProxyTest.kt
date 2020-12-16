@@ -71,7 +71,7 @@ internal class CategoryRepositoryEBProxyTest {
                         .returns(categoryToSave.name(), from { it.name() })
                         .returns(categoryToSave.slug(), from { it.slug() })
                         .returns(categoryToSave.parentId(), from { it.parentId() })
-                        .returns(categoryToSave.isVisible, from { it.isVisible })
+                        .returns(categoryToSave.visible(), from { it.visible() })
                 }
                 .verifyComplete()
         }
@@ -159,7 +159,7 @@ internal class CategoryRepositoryEBProxyTest {
                     savedCategory.name(),
                     savedCategory.slug(),
                     savedCategory.parentId(),
-                    !savedCategory.isVisible
+                    !savedCategory.visible()
                 )
 
                 StepVerifier.create(categoryRepositoryEBProxy.save(updatedCategory))
@@ -169,7 +169,7 @@ internal class CategoryRepositoryEBProxyTest {
                             .returns(updatedCategory.name(), from(Category::name))
                             .returns(updatedCategory.slug(), from(Category::slug))
                             .returns(updatedCategory.parentId(), from(Category::parentId))
-                            .returns(updatedCategory.isVisible, from(Category::isVisible))
+                            .returns(updatedCategory.visible(), from(Category::visible))
                     }.verifyComplete()
             }
 

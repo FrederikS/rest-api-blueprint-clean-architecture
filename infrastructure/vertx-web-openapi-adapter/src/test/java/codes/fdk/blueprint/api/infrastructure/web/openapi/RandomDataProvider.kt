@@ -10,7 +10,7 @@ object RandomDataProvider {
         return PostCategoryRequest(
             name = FAKER.commerce().department(),
             slug = FAKER.internet().slug(),
-            isVisible = FAKER.bool().bool()
+            visible = FAKER.bool().bool()
         )
     }
 

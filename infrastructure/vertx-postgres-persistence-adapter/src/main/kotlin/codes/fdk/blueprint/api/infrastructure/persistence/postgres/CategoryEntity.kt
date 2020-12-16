@@ -7,5 +7,5 @@ internal data class CategoryEntity(
     val name: String,
     val slug: String,
     val parentId: CategoryId?,
-    val isVisible: Boolean
+    val visible: Boolean
 )

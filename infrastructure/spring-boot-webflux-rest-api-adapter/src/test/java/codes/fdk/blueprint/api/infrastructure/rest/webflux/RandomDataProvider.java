@@ -28,7 +28,7 @@ final class RandomDataProvider {
         return new PostCategoryRequest(
                 name,
                 randomPostRootCategoryRequest.slug(),
-                randomPostRootCategoryRequest.isVisible()
+                randomPostRootCategoryRequest.visible()
         );
     }
 
@@ -38,7 +38,7 @@ final class RandomDataProvider {
         return new PostCategoryRequest(
                 randomPostRootCategoryRequest.name(),
                 slug,
-                randomPostRootCategoryRequest.isVisible()
+                randomPostRootCategoryRequest.visible()
         );
     }
 

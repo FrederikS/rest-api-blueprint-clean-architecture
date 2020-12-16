@@ -13,7 +13,7 @@ interface CategoryEntityMapper {
                 category.name(),
                 category.slug(),
                 category.parentId(),
-                category.isVisible()
+                category.visible()
         );
     }
 
@@ -23,7 +23,7 @@ interface CategoryEntityMapper {
                 entity.name(),
                 entity.slug(),
                 entity.parentId(),
-                entity.isVisible()
+                entity.visible()
         );
     }
 

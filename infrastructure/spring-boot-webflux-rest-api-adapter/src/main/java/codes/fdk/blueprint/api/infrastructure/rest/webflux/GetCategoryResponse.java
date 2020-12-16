@@ -12,10 +12,4 @@ record GetCategoryResponse(@JsonProperty("id") CategoryId id,
                            @JsonProperty("name") String name,
                            @JsonProperty("slug") String slug,
                            @JsonProperty("parentId") @Nullable CategoryId parentId,
-                           @JsonProperty("isVisible") boolean isVisible) {
-
-    public GetCategoryResponse(CategoryId id, String name, String slug, boolean isVisible) {
-        this(id, name, slug, null, isVisible);
-    }
-
-}
+                           @JsonProperty("visible") boolean visible) {}

@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS categories(
     name text,
     slug text,
     parent_id uuid,
-    is_visible boolean
+    visible boolean
 );

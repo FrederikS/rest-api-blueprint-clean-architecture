@@ -18,7 +18,7 @@ internal object RandomDataProvider {
             name = name,
             slug = "slug",
             parentId = null,
-            isVisible = true
+            visible = true
         )
     }
 
@@ -30,7 +30,7 @@ internal object RandomDataProvider {
             name = randomCategory.name,
             slug = randomCategory.slug,
             parentId = randomCategory.parentId,
-            isVisible = randomCategory.isVisible
+            visible = randomCategory.visible
         )
     }
 
@@ -42,7 +42,7 @@ internal object RandomDataProvider {
             name = randomCategory.name,
             slug = randomCategory.slug,
             parentId = CategoryId.of(UUID.randomUUID().toString()),
-            isVisible = randomCategory.isVisible
+            visible = randomCategory.visible
         )
     }
 

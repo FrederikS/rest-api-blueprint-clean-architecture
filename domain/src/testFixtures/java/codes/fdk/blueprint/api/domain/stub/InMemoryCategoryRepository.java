@@ -53,7 +53,7 @@ public class InMemoryCategoryRepository implements CategoryRepository {
                     category.name(),
                     category.slug(),
                     category.parentId(),
-                    category.isVisible()
+                    category.visible()
             );
         }
 

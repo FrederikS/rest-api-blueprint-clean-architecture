@@ -116,7 +116,7 @@ public class CategoryApiValidationTests {
         @DisplayName("When PATCH /categories/{id} with invalid body")
         class PatchCategoryWithInvalidBody {
 
-            @ValueSource(strings = {"{}", "{ \"isVisible\": null }"})
+            @ValueSource(strings = {"{}", "{ \"visible\": null }"})
             @ParameterizedTest(name = "body = \"{0}\"")
             @DisplayName("then status code 400 should get returned")
             void shouldReturn400(String body) {

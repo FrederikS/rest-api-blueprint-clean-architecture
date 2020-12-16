@@ -17,7 +17,7 @@ interface CommandMapper {
         return createRootCategoryCommand(
                 request.name(),
                 request.slug(),
-                request.isVisible()
+                request.visible()
         );
     }
 
@@ -26,12 +26,12 @@ interface CommandMapper {
                 request.name(),
                 request.slug(),
                 parentId,
-                request.isVisible()
+                request.visible()
         );
     }
 
     default UpdateCategoryCommand toUpdateCommand(CategoryId id, PatchCategoryRequest request) {
-        return new UpdateCategoryCommand(id, request.isVisible());
+        return new UpdateCategoryCommand(id, request.visible());
     }
 
     default GetCategoryResponse toResponse(Category category) {
@@ -40,7 +40,7 @@ interface CommandMapper {
                 category.name(),
                 category.slug(),
                 category.parentId(),
-                category.isVisible()
+                category.visible()
         );
     }
 

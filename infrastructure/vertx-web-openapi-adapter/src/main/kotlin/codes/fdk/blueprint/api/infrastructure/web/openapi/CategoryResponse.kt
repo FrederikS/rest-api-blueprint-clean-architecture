@@ -8,5 +8,5 @@ data class CategoryResponse(
     @get:JsonProperty("name") val name: String,
     @get:JsonProperty("slug") val slug: String,
     @get:JsonProperty("parentId") val parentId: CategoryId?,
-    @get:JsonProperty("isVisible") val isVisible: Boolean
+    @get:JsonProperty("visible") val visible: Boolean
 )

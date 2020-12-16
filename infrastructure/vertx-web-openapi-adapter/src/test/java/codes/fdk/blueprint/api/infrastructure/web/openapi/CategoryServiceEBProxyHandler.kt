@@ -15,6 +15,7 @@ import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
+import io.vertx.core.json.Json
 import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import reactor.core.publisher.Mono
@@ -38,7 +39,7 @@ class CategoryServiceEBProxyHandler(private val vertx: Vertx) : Handler<Message<
         message.body()
             .mapToCreateCategoryCommand()
             .let(categoryService::create)
-            .map(JsonObject::mapFrom)
+            .map(Companion::fromCategory)
             .subscribe(message::reply) { message.fail(500, it.message) }
     }
 
@@ -80,6 +81,20 @@ class CategoryServiceEBProxyHandler(private val vertx: Vertx) : Handler<Message<
             getString("parentId")?.let { CategoryId.of(it) },
             getBoolean("visible")
         )
+    }
+
+    companion object {
+
+        private fun fromCategory(category: Category): JsonObject {
+            return JsonObject(mapOf(
+                "id" to Json.encode(category.id()),
+                "name" to category.name(),
+                "slug" to category.slug(),
+                "parentId" to Json.encode(category.parentId()),
+                "visible" to category.visible()
+            ))
+        }
+
     }
 
 }

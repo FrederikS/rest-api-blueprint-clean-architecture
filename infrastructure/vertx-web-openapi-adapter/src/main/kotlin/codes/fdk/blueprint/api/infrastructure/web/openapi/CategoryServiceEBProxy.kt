@@ -102,11 +102,12 @@ class CategoryServiceEBProxy(private val vertx: Vertx) : CategoryService {
 
     }
 
+    //TODO outsource
     private fun CreateCategoryCommand.toJson(): JsonObject {
         return JsonObject(mapOf(
             "name" to name(),
             "slug" to slug(),
-            "visible" to isVisible
+            "visible" to visible()
         ))
     }
 

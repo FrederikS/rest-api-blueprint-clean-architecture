@@ -10,4 +10,4 @@ record CategoryEntity(@Id @Nullable CategoryId id,
                       String name,
                       String slug,
                       @Nullable CategoryId parentId,
-                      boolean isVisible) {}
+                      boolean visible) {}
