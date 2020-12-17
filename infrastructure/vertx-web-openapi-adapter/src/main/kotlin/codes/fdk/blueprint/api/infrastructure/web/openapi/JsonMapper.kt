@@ -37,29 +37,6 @@ internal object JsonMapper {
         }
     }
 
-    fun fromCreateCategoryCommand(command: CreateCategoryCommand): JsonObject {
-        return with(command) {
-            JsonObject(
-                mapOf(
-                    "name" to name(),
-                    "slug" to slug(),
-                    "visible" to visible()
-                )
-            )
-        }
-    }
-
-    fun fromUpdateCategoryCommand(command: UpdateCategoryCommand): JsonObject {
-        return with(command) {
-            JsonObject(
-                mapOf(
-                    "id" to Json.encode(id()),
-                    "visible" to visible()
-                )
-            )
-        }
-    }
-
     fun toCategory(json: JsonObject): Category {
         return with(json) {
             Category(
@@ -68,6 +45,19 @@ internal object JsonMapper {
                 getString("slug"),
                 getString("parentId")?.let { CategoryId.of(it) },
                 getBoolean("visible")
+            )
+        }
+    }
+
+
+    fun fromCreateCategoryCommand(command: CreateCategoryCommand): JsonObject {
+        return with(command) {
+            JsonObject(
+                mapOf(
+                    "name" to name(),
+                    "slug" to slug(),
+                    "visible" to visible()
+                )
             )
         }
     }
@@ -83,6 +73,17 @@ internal object JsonMapper {
         }
     }
 
+    fun fromUpdateCategoryCommand(command: UpdateCategoryCommand): JsonObject {
+        return with(command) {
+            JsonObject(
+                mapOf(
+                    "id" to Json.encode(id()),
+                    "visible" to visible()
+                )
+            )
+        }
+    }
+
     fun toUpdateCategoryCommand(json: JsonObject): UpdateCategoryCommand {
         return with(json) {
             UpdateCategoryCommand(
@@ -91,7 +92,5 @@ internal object JsonMapper {
             )
         }
     }
-
-
 
 }
