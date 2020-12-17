@@ -49,7 +49,7 @@ class CategoryServiceEBProxyHandler : Handler<Message<JsonObject>> {
 
     private fun findCategoryById(message: Message<JsonObject>) {
         message.body()
-            .mapTo(CategoryId::class.java)
+            .let(JsonMapper::toCategoryId)
             .let(categoryService::byId)
             .switchIfEmpty(Mono.empty<Category>().doOnSubscribe { message.fail(404, "Not Found.") })
             .map(JsonMapper::fromCategory)

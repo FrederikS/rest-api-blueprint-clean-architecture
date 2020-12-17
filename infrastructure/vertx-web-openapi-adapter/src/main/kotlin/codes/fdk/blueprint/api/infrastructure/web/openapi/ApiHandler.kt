@@ -1,8 +1,10 @@
 package codes.fdk.blueprint.api.infrastructure.web.openapi
 
+import codes.fdk.blueprint.api.domain.model.CategoryId
 import codes.fdk.blueprint.api.domain.service.CategoryService
 import io.vertx.core.http.HttpHeaders.CONTENT_TYPE
 import io.vertx.core.http.HttpHeaders.LOCATION
+import io.vertx.core.json.Json
 import io.vertx.core.json.JsonArray
 import io.vertx.ext.web.RoutingContext
 import kotlinx.coroutines.flow.fold
@@ -35,6 +37,18 @@ class ApiHandler(private val categoryService: CategoryService) {
                     .setStatusCode(201)
                     .putHeader(LOCATION, "/categories/${it.id()}")
                     .end()
+            }
+    }
+
+    fun getCategory(): suspend (RoutingContext) -> Unit = { ctx ->
+        categoryService.byId(CategoryId.of(ctx.pathParam("id")))
+            .map(ResponseMapper::toResponse)
+            .awaitSingle()
+            .also {
+                ctx.response()
+                    .setStatusCode(200)
+                    .putHeader(CONTENT_TYPE, "application/json")
+                    .end(Json.encode(it))
             }
     }
 

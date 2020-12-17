@@ -53,7 +53,7 @@ class CategoryServiceEBProxy(private val vertx: Vertx) : CategoryService {
         return mono {
             try {
                 vertx.eventBus()
-                    .request<JsonObject>(ADDRESS, JsonObject.mapFrom(id), action(FindById))
+                    .request<JsonObject>(ADDRESS, JsonMapper.fromCategoryId(id), action(FindById))
                     .await()
                     .body()
                     .let(JsonMapper::toCategory)

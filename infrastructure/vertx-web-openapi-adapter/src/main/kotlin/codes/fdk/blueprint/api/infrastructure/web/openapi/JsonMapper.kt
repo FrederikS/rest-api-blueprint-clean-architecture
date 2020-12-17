@@ -7,17 +7,30 @@ import codes.fdk.blueprint.api.domain.model.CategoryId
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 
+//TODO checkout https://vertx.io/docs/vertx-json-schema/java/
 internal object JsonMapper {
 
     //TODO outsource
+    fun fromCategoryId(id: CategoryId?): JsonObject {
+        return JsonObject(mapOf(
+            "value" to id?.value()
+        ))
+    }
+
+    fun toCategoryId(json: JsonObject): CategoryId? {
+        return with(json) {
+            getString("value")?.let { CategoryId.of(it) }
+        }
+    }
+
     fun fromCategory(category: Category): JsonObject {
         return with(category) {
             JsonObject(
                 mapOf(
-                    "id" to Json.encode(id()),
+                    "id" to id()?.value(),
                     "name" to name(),
                     "slug" to slug(),
-                    "parentId" to Json.encode(parentId()),
+                    "parentId" to parentId()?.value(),
                     "visible" to visible(),
                 )
             )
@@ -78,5 +91,7 @@ internal object JsonMapper {
             )
         }
     }
+
+
 
 }

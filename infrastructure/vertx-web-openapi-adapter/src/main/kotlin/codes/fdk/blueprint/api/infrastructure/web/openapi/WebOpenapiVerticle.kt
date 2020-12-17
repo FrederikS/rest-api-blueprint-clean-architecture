@@ -39,8 +39,9 @@ class WebOpenapiVerticle : CoroutineVerticle() {
         router.route("/swagger-ui/*").handler(StaticHandler.create("META-INF/resources/webjars/swagger-ui/3.37.2"))
 
         val api = RouterBuilder.create(vertx, "openapi.json").await()
-        api.operation("getRootCategories").coroutineHandler(apiHandler.rootCategories())
+        api.operation("getCategory").coroutineHandler(apiHandler.getCategory())
         api.operation("postCategory").coroutineHandler(apiHandler.postCategory())
+        api.operation("getRootCategories").coroutineHandler(apiHandler.rootCategories())
 
         router.mountSubRouter("/", api.createRouter())
 

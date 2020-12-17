@@ -5,6 +5,7 @@ import io.vertx.core.Future
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpHeaders.ACCEPT
 import io.vertx.core.http.HttpHeaders.CONTENT_TYPE
+import io.vertx.core.http.HttpHeaders.ETAG
 import io.vertx.core.http.HttpHeaders.LOCATION
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.client.HttpResponse
@@ -116,6 +117,7 @@ internal class WebOpenapiVerticleTest {
     internal inner class RootCategoryGiven {
 
         private lateinit var rootCategoryRequest: PostCategoryRequest
+        private lateinit var rootCategoryLocation: String
 
         @BeforeEach
         fun setUp(context: VertxTestContext) {
@@ -126,6 +128,12 @@ internal class WebOpenapiVerticleTest {
                 .sendJson(rootCategoryRequest)
                 .onSuccess { context.completeNow() }
                 .onFailure { context.failNow(it) }
+                .onComplete {
+                    context.verify {
+                        rootCategoryLocation = it.result().getHeader(LOCATION.toString())
+                        assertThat(rootCategoryLocation).isNotBlank()
+                    }
+                }
         }
 
 
@@ -166,7 +174,76 @@ internal class WebOpenapiVerticleTest {
                             isArray.hasSize(1)
                             inPath("$[0].name").isEqualTo(rootCategoryRequest.name)
                             inPath("$[0].slug").isEqualTo(rootCategoryRequest.slug)
+                            inPath("$[0].parentId").isAbsent()
                             inPath("$[0].visible").isEqualTo(rootCategoryRequest.visible)
+                        }
+                    }
+            }
+
+        }
+
+        @Nested
+        @DisplayName("when GET /categories/{id}")
+        internal inner class GetCategory {
+
+            @Test
+            @DisplayName("then status code 200 should get returned")
+            fun shouldReturn200(context: VertxTestContext) {
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.statusCode()).isEqualTo(200)
+                    }
+            }
+
+            @Test
+            @DisplayName("then json content type should get returned")
+            fun shouldReturnJson(context: VertxTestContext) {
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.getHeader(CONTENT_TYPE.toString())).isEqualTo("application/json")
+                    }
+            }
+
+            @Test
+            @DisplayName("then an etag header should get returned")
+            fun shouldReturnEtag(context: VertxTestContext) {
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.getHeader(ETAG.toString())).isNotBlank()
+                    }
+            }
+
+            @Test
+            @DisplayName("then data of post-category-request should be included in json response")
+            fun shouldReturnCategoryRequestData(context: VertxTestContext) {
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThatJson(it.bodyAsString()) {
+                            inPath("$.name").isEqualTo(rootCategoryRequest.name)
+                            inPath("$.slug").isEqualTo(rootCategoryRequest.slug)
+                            inPath("$.parentId").isAbsent()
+                            inPath("$.visible").isEqualTo(rootCategoryRequest.visible)
+                        }
+                    }
+            }
+
+            @Test
+            @DisplayName("then a non-blank id should be included in json response")
+            fun shouldReturnAnId(context: VertxTestContext) {
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThatJson(it.bodyAsString()) {
+                            inPath("$.id").isString.isNotBlank
                         }
                     }
             }
