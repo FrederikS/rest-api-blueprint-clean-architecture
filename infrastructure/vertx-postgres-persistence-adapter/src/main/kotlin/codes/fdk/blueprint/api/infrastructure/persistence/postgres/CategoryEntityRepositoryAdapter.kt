@@ -11,28 +11,26 @@ import reactor.core.publisher.Mono
 
 internal class CategoryEntityRepositoryAdapter(private val categoryEntityRepository: CategoryEntityRepository) : CategoryRepository {
 
-    private val categoryEntityMapper = CategoryEntityMapper.INSTANCE;
-
     override fun save(category: Category): Mono<Category> {
-        return mono { categoryEntityRepository.save(categoryEntityMapper.toEntity(category)) }
-            .map(categoryEntityMapper::fromEntity)
+        return mono { categoryEntityRepository.save(CategoryEntityMapper.toEntity(category)) }
+            .map(CategoryEntityMapper::fromEntity)
     }
 
     override fun findAll(): Flux<Category> {
         return flux {
             categoryEntityRepository.findAll().collect { send(it) }
-        }.map(categoryEntityMapper::fromEntity)
+        }.map(CategoryEntityMapper::fromEntity)
     }
 
     override fun findById(id: CategoryId): Mono<Category> {
         return mono { categoryEntityRepository.findById(id) }
-            .map(categoryEntityMapper::fromEntity)
+            .map(CategoryEntityMapper::fromEntity)
     }
 
     override fun findByParentId(parentId: CategoryId): Flux<Category> {
         return flux {
             categoryEntityRepository.findByParentId(parentId).collect { send(it) }
-        }.map(categoryEntityMapper::fromEntity)
+        }.map(CategoryEntityMapper::fromEntity)
     }
 
 }

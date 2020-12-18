@@ -1,15 +1,8 @@
 package codes.fdk.blueprint.api.infrastructure.persistence.postgres
 
 import codes.fdk.blueprint.api.domain.model.Category
-import org.mapstruct.Mapper
-import org.mapstruct.factory.Mappers
 
-@Mapper
-internal abstract class CategoryEntityMapper {
-
-    companion object {
-        val INSTANCE: CategoryEntityMapper = Mappers.getMapper(CategoryEntityMapper::class.java)
-    }
+internal object CategoryEntityMapper {
 
     fun toEntity(category: Category): CategoryEntity {
         return CategoryEntity(

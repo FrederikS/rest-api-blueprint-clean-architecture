@@ -10,15 +10,15 @@ import io.vertx.core.json.JsonObject
 //TODO checkout https://vertx.io/docs/vertx-json-schema/java/
 object JsonMapper {
 
-    fun fromCategoryId(id: CategoryId?): JsonObject {
+    fun fromCategoryId(id: CategoryId): JsonObject {
         return JsonObject(mapOf(
-            "value" to id?.value()
+            "value" to id.value()
         ))
     }
 
-    fun toCategoryId(json: JsonObject): CategoryId? {
+    fun toCategoryId(json: JsonObject): CategoryId {
         return with(json) {
-            getString("value")?.let { CategoryId.of(it) }
+            getString("value").let { CategoryId.of(it) }
         }
     }
 

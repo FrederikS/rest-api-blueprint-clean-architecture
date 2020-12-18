@@ -3,6 +3,7 @@ package codes.fdk.blueprint.api.infrastructure.persistence.postgres
 import codes.fdk.blueprint.api.domain.model.Category
 import codes.fdk.blueprint.api.domain.model.CategoryId
 import codes.fdk.blueprint.api.domain.spi.CategoryRepository
+import codes.fdk.blueprint.api.infrastructure.json.JsonMapper
 import codes.fdk.blueprint.api.infrastructure.persistence.postgres.CategoryRepositoryEBProxy.Action.FindAll
 import codes.fdk.blueprint.api.infrastructure.persistence.postgres.CategoryRepositoryEBProxy.Action.FindById
 import codes.fdk.blueprint.api.infrastructure.persistence.postgres.CategoryRepositoryEBProxy.Action.FindByParentId
@@ -11,6 +12,7 @@ import io.vertx.core.Vertx
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.eventbus.EventBus
 import io.vertx.core.eventbus.ReplyException
+import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.coroutines.await
 import io.vertx.kotlin.coroutines.toChannel
 import kotlinx.coroutines.channels.consumeEach
@@ -30,9 +32,10 @@ class CategoryRepositoryEBProxy(private val vertx: Vertx) : CategoryRepository {
     override fun save(category: Category): Mono<Category> {
         return mono {
             vertx.eventBus()
-                .request<Category>(ADDRESS, category, action(Save))
-                .map { it.body() }
+                .request<JsonObject>(ADDRESS, JsonMapper.fromCategory(category), action(Save))
                 .await()
+                .body()
+                .let(JsonMapper::toCategory)
         }
     }
 
@@ -44,9 +47,10 @@ class CategoryRepositoryEBProxy(private val vertx: Vertx) : CategoryRepository {
         return mono {
             try {
                 vertx.eventBus()
-                    .request<Category>(ADDRESS, id.value(), action(FindById))
-                    .map { it.body() }
+                    .request<JsonObject>(ADDRESS, JsonMapper.fromCategoryId(id), action(FindById))
                     .await()
+                    .body()
+                    .let(JsonMapper::toCategory)
             } catch (e: ReplyException) {
                 if (e.failureCode() != 404) throw e else null
             }
@@ -54,20 +58,24 @@ class CategoryRepositoryEBProxy(private val vertx: Vertx) : CategoryRepository {
     }
 
     override fun findByParentId(parentId: CategoryId): Flux<Category> {
-        return vertx.eventBus().requestStream(ADDRESS, parentId.value(), action(FindByParentId))
+        return vertx.eventBus().requestStream(ADDRESS, JsonMapper.fromCategoryId(parentId), action(FindByParentId))
     }
 
     //TODO measure if custom streaming is less performant then sending lists around
-    private fun <T> EventBus.requestStream(address: String, message: Any?, deliveryOptions: DeliveryOptions): Flux<T> {
+    private fun EventBus.requestStream(
+        address: String,
+        message: JsonObject?,
+        deliveryOptions: DeliveryOptions
+    ): Flux<Category> {
         return flux {
             val replyWithAddress = request<String>(address, message, deliveryOptions).await()
 
-            val consumer = vertx.eventBus().localConsumer<T>(replyWithAddress.body())
+            val consumer = vertx.eventBus().localConsumer<JsonObject>(replyWithAddress.body())
             consumer.completionHandler { replyWithAddress.reply(null) }
 
             consumer.bodyStream().toChannel(vertx).consumeEach {
                 if (it != null) {
-                    send(it)
+                    send(JsonMapper.toCategory(it))
                 } else {
                     consumer.unregister()
                 }

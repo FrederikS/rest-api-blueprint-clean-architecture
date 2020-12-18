@@ -1,5 +1,6 @@
 module codes.fdk.blueprint.api.infrastructure.persistence.postgres {
     requires transitive codes.fdk.blueprint.api.domain;
+    requires codes.fdk.blueprint.api.infrastructure.json;
 
     requires org.slf4j;
     requires kotlin.stdlib;
@@ -10,7 +11,6 @@ module codes.fdk.blueprint.api.infrastructure.persistence.postgres {
     requires io.vertx.client.sql;
     requires io.vertx.kotlin.coroutines;
     requires reactor.core;
-    requires org.mapstruct;
 
     exports codes.fdk.blueprint.api.infrastructure.persistence.postgres;
 }

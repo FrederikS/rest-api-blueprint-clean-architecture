@@ -1,12 +1,9 @@
 package codes.fdk.blueprint.api.infrastructure.persistence.postgres
 
-import codes.fdk.blueprint.api.domain.model.Category
-import codes.fdk.blueprint.api.domain.model.CategoryId
 import io.vertx.core.Context
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.MessageConsumer
-import io.vertx.core.eventbus.impl.codecs.JsonObjectMessageCodec
-import io.vertx.core.eventbus.impl.codecs.StringMessageCodec
+import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.await
 import io.vertx.pgclient.PgConnectOptions
@@ -18,14 +15,10 @@ class PostgresPersistenceVerticle : CoroutineVerticle() {
 
     private lateinit var pgClient: SqlClient
     private lateinit var categoryEntityRepositoryAdapter: CategoryEntityRepositoryAdapter
-    private lateinit var categoryRepositoryEBProxyConsumer: MessageConsumer<Any>
+    private lateinit var categoryRepositoryEBProxyConsumer: MessageConsumer<JsonObject>
 
     override fun init(vertx: Vertx, context: Context) {
         super.init(vertx, context)
-
-        vertx.eventBus()
-            .registerDefaultCodec(Category::class.java, CategoryCodec(JsonObjectMessageCodec()))
-            .registerDefaultCodec(CategoryId::class.java, CategoryIdCodec(StringMessageCodec()))
 
         val connectOptions = with(context.config()) {
             PgConnectOptions().apply {
@@ -48,7 +41,7 @@ class PostgresPersistenceVerticle : CoroutineVerticle() {
         pgClient.query(schema).execute().await()
 
         categoryRepositoryEBProxyConsumer = vertx.eventBus()
-            .localConsumer<Any>(CategoryRepositoryEBProxy.ADDRESS)
+            .localConsumer<JsonObject>(CategoryRepositoryEBProxy.ADDRESS)
             .handler(CategoryRepositoryEBProxyHandler(vertx, categoryEntityRepositoryAdapter))
     }
 

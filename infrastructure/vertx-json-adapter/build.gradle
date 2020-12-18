@@ -14,3 +14,9 @@ dependencies {
     testImplementation 'io.vertx:vertx-junit5'
     testImplementation 'org.assertj:assertj-core'
 }
+
+compileJava {
+    options.compilerArgs += [
+            '--patch-module', "codes.fdk.blueprint.api.infrastructure.json=${sourceSets.main.output.asPath}"
+    ]
+}
