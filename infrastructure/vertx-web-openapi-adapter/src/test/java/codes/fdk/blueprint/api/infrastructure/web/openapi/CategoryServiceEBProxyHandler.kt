@@ -4,6 +4,7 @@ import codes.fdk.blueprint.api.domain.model.Category
 import codes.fdk.blueprint.api.domain.model.CategoryId
 import codes.fdk.blueprint.api.domain.service.CategoryService
 import codes.fdk.blueprint.api.domain.stub.InMemoryCategoryRepository
+import codes.fdk.blueprint.api.infrastructure.json.JsonMapper
 import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action
 import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action.Create
 import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action.FindAll

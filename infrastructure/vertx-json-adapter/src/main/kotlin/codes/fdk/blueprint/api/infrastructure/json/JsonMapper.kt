@@ -1,4 +1,4 @@
-package codes.fdk.blueprint.api.infrastructure.web.openapi
+package codes.fdk.blueprint.api.infrastructure.json
 
 import codes.fdk.blueprint.api.domain.command.CreateCategoryCommand
 import codes.fdk.blueprint.api.domain.command.UpdateCategoryCommand
@@ -8,9 +8,8 @@ import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 
 //TODO checkout https://vertx.io/docs/vertx-json-schema/java/
-internal object JsonMapper {
+object JsonMapper {
 
-    //TODO outsource
     fun fromCategoryId(id: CategoryId?): JsonObject {
         return JsonObject(mapOf(
             "value" to id?.value()
