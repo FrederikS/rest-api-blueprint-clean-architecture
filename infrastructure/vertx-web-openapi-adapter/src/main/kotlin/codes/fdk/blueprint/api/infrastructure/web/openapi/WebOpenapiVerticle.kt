@@ -43,6 +43,7 @@ class WebOpenapiVerticle : CoroutineVerticle() {
         api.operation("postCategory").coroutineHandler(apiHandler.postCategory())
         api.operation("updateCategory").coroutineHandler(apiHandler.updateCategory())
         api.operation("getRootCategories").coroutineHandler(apiHandler.rootCategories())
+        api.operation("postChildCategory").coroutineHandler(apiHandler.postChildCategory())
 
         router.mountSubRouter("/", api.createRouter())
 

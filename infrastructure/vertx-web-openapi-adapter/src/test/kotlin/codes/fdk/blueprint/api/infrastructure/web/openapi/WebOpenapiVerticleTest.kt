@@ -18,12 +18,14 @@ import io.vertx.kotlin.coroutines.await
 import kotlinx.coroutines.runBlocking
 import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Condition
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import java.util.function.Consumer
 
 @ExtendWith(VertxExtension::class, ResetInMemoryRepoExtension::class)
 internal class WebOpenapiVerticleTest {
@@ -281,6 +283,54 @@ internal class WebOpenapiVerticleTest {
 
         }
 
+        @Nested
+        @DisplayName("when POST /categories/{id}")
+        internal inner class PostChildCategory {
+
+            @Test
+            @DisplayName("then 201 status code should get returned")
+            fun shouldReturn201(context: VertxTestContext) {
+                webClient.post(rootCategoryLocation)
+                    .putHeader(CONTENT_TYPE.toString(), "application/json")
+                    .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                    .assertThat(context) {
+                        assertThat(it.statusCode()).isEqualTo(201)
+                    }
+            }
+
+            @Test
+            @DisplayName("then location header to created category should get returned")
+            fun shouldReturnLocationHeader(context: VertxTestContext) {
+                webClient.post(rootCategoryLocation)
+                    .putHeader(CONTENT_TYPE.toString(), "application/json")
+                    .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                    .assertThat(context) {
+                        assertThat(it.getHeader(LOCATION.toString())).matches("^\\/categories\\/[^\\s\\/]+$")
+                    }
+            }
+
+            @Test
+            @DisplayName("then GET /categories/id location should get return parentId")
+            fun shouldReturnProperParentId(context: VertxTestContext) {
+                val childCategoryLocation = runBlocking {
+                    webClient.post(rootCategoryLocation)
+                        .putHeader(CONTENT_TYPE.toString(), "application/json")
+                        .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                        .await()
+                        .getHeader(LOCATION.toString())
+                }
+
+                webClient.get(childCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThatJson(it.bodyAsString()) {
+                            inPath("$.parentId").asString().matches { id -> rootCategoryLocation.endsWith(id) }
+                        }
+                    }
+            }
+
+        }
 
     }
 

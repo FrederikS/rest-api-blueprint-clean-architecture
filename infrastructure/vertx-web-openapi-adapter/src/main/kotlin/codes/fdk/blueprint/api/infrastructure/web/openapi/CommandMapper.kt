@@ -6,7 +6,7 @@ import codes.fdk.blueprint.api.domain.model.CategoryId
 
 object CommandMapper {
 
-    fun toCommand(request: PostCategoryRequest): CreateCategoryCommand {
+    fun toCreateCommand(request: PostCategoryRequest): CreateCategoryCommand {
         return CreateCategoryCommand.createRootCategoryCommand(
             request.name,
             request.slug,
@@ -14,7 +14,16 @@ object CommandMapper {
         )
     }
 
-    fun toCommand(id: CategoryId, request: PatchCategoryRequest): UpdateCategoryCommand {
+    fun toCreateCommand(parentId: CategoryId, request: PostCategoryRequest): CreateCategoryCommand {
+        return CreateCategoryCommand.createChildCategoryCommand(
+            request.name,
+            request.slug,
+            parentId,
+            request.visible
+        )
+    }
+
+    fun toUpdateCommand(id: CategoryId, request: PatchCategoryRequest): UpdateCategoryCommand {
         return UpdateCategoryCommand(id, request.visible)
     }
 

@@ -55,6 +55,7 @@ object JsonMapper {
                 mapOf(
                     "name" to name(),
                     "slug" to slug(),
+                    "parentId" to command.parentId()?.value(),
                     "visible" to visible()
                 )
             )

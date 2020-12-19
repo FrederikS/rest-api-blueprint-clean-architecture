@@ -1,5 +1,6 @@
 package codes.fdk.blueprint.api.infrastructure.web.openapi
 
+import codes.fdk.blueprint.api.domain.model.Category
 import codes.fdk.blueprint.api.domain.model.CategoryId
 import codes.fdk.blueprint.api.domain.service.CategoryService
 import io.vertx.core.http.HttpHeaders.CONTENT_LOCATION
@@ -13,6 +14,10 @@ import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitSingle
 
 class ApiHandler(private val categoryService: CategoryService) {
+
+    companion object {
+        private fun categoryLocationFor(category: Category): String = "/categories/${category.id()}"
+    }
 
     fun rootCategories(): suspend (RoutingContext) -> Unit = { ctx ->
         categoryService.all()
@@ -30,13 +35,13 @@ class ApiHandler(private val categoryService: CategoryService) {
     fun postCategory(): suspend (RoutingContext) -> Unit = { ctx ->
         ctx.bodyAsJson
             .mapTo(PostCategoryRequest::class.java)
-            .let(CommandMapper::toCommand)
+            .let(CommandMapper::toCreateCommand)
             .let(categoryService::create)
             .awaitSingle()
             .also {
                 ctx.response()
                     .setStatusCode(201)
-                    .putHeader(LOCATION, "/categories/${it.id()}")
+                    .putHeader(LOCATION, categoryLocationFor(it))
                     .end()
             }
     }
@@ -56,13 +61,27 @@ class ApiHandler(private val categoryService: CategoryService) {
     fun updateCategory(): suspend (RoutingContext) -> Unit = { ctx ->
         ctx.bodyAsJson
             .mapTo(PatchCategoryRequest::class.java)
-            .let { CommandMapper.toCommand(CategoryId.of(ctx.pathParam("id")), it) }
+            .let { CommandMapper.toUpdateCommand(CategoryId.of(ctx.pathParam("id")), it) }
             .let(categoryService::update)
             .awaitSingle()
             .also {
                 ctx.response()
                     .setStatusCode(204)
-                    .putHeader(CONTENT_LOCATION, "/categories/${it.id()}")
+                    .putHeader(CONTENT_LOCATION, categoryLocationFor(it))
+                    .end()
+            }
+    }
+
+    fun postChildCategory(): suspend (RoutingContext) -> Unit = { ctx ->
+        ctx.bodyAsJson
+            .mapTo(PostCategoryRequest::class.java)
+            .let { CommandMapper.toCreateCommand(CategoryId.of(ctx.pathParam("id")), it) }
+            .let(categoryService::create)
+            .awaitSingle()
+            .also {
+                ctx.response()
+                    .setStatusCode(201)
+                    .putHeader(LOCATION, categoryLocationFor(it))
                     .end()
             }
     }
