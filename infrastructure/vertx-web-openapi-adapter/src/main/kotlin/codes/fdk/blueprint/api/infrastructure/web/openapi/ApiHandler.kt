@@ -2,6 +2,7 @@ package codes.fdk.blueprint.api.infrastructure.web.openapi
 
 import codes.fdk.blueprint.api.domain.model.CategoryId
 import codes.fdk.blueprint.api.domain.service.CategoryService
+import io.vertx.core.http.HttpHeaders.CONTENT_LOCATION
 import io.vertx.core.http.HttpHeaders.CONTENT_TYPE
 import io.vertx.core.http.HttpHeaders.LOCATION
 import io.vertx.core.json.Json
@@ -49,6 +50,20 @@ class ApiHandler(private val categoryService: CategoryService) {
                     .setStatusCode(200)
                     .putHeader(CONTENT_TYPE, "application/json")
                     .end(Json.encode(it))
+            }
+    }
+
+    fun updateCategory(): suspend (RoutingContext) -> Unit = { ctx ->
+        ctx.bodyAsJson
+            .mapTo(PatchCategoryRequest::class.java)
+            .let { CommandMapper.toCommand(CategoryId.of(ctx.pathParam("id")), it) }
+            .let(categoryService::update)
+            .awaitSingle()
+            .also {
+                ctx.response()
+                    .setStatusCode(204)
+                    .putHeader(CONTENT_LOCATION, "/categories/${it.id()}")
+                    .end()
             }
     }
 

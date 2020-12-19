@@ -4,6 +4,7 @@ import codes.fdk.blueprint.api.domain.stub.ResetInMemoryRepoExtension
 import io.vertx.core.Future
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpHeaders.ACCEPT
+import io.vertx.core.http.HttpHeaders.CONTENT_LOCATION
 import io.vertx.core.http.HttpHeaders.CONTENT_TYPE
 import io.vertx.core.http.HttpHeaders.ETAG
 import io.vertx.core.http.HttpHeaders.LOCATION
@@ -13,6 +14,8 @@ import io.vertx.ext.web.client.WebClient
 import io.vertx.ext.web.client.WebClientOptions
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
+import io.vertx.kotlin.coroutines.await
+import kotlinx.coroutines.runBlocking
 import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
@@ -85,32 +88,6 @@ internal class WebOpenapiVerticleTest {
 
     }
 
-    @Nested
-    @DisplayName("When POST /categories")
-    internal inner class PostCategory {
-
-        @Test
-        @DisplayName("then 201 status code should get returned")
-        fun shouldReturn201(context: VertxTestContext) {
-            webClient.post("/categories")
-                .putHeader(CONTENT_TYPE.toString(), "application/json")
-                .sendJson(RandomDataProvider.randomPostCategoryRequest())
-                .assertThat(context) {
-                    assertThat(it.statusCode()).isEqualTo(201)
-                }
-        }
-
-        @Test
-        @DisplayName("then location header to created category should get returned")
-        fun shouldReturnLocationHeader(context: VertxTestContext) {
-            webClient.post("/categories")
-                .putHeader(CONTENT_TYPE.toString(), "application/json")
-                .sendJson(RandomDataProvider.randomPostCategoryRequest())
-                .assertThat(context) {
-                    assertThat(it.getHeader(LOCATION.toString())).matches("^\\/categories\\/[^\\s\\/]+$")
-                }
-        }
-    }
 
     @Nested
     @DisplayName("Given a root category")
@@ -250,6 +227,88 @@ internal class WebOpenapiVerticleTest {
 
         }
 
+        @Nested
+        @DisplayName("when PATCH /categories/{id}")
+        internal inner class PatchCategory {
+
+            @Test
+            @DisplayName("then status code 204 should get returned")
+            fun shouldReturn204(context: VertxTestContext) {
+                val patchRequest = PatchCategoryRequest(!rootCategoryRequest.visible)
+
+                webClient.patch(rootCategoryLocation)
+                    .putHeader(CONTENT_TYPE.toString(), "application/json")
+                    .sendJson(patchRequest)
+                    .assertThat(context) {
+                        assertThat(it.statusCode()).isEqualTo(204)
+                    }
+            }
+
+            @Test
+            @DisplayName("then content-location header to patched category should get returned")
+            fun shouldReturnLocationHeaderWithCategoryURLofPatchedItem(context: VertxTestContext) {
+                val patchRequest = PatchCategoryRequest(!rootCategoryRequest.visible)
+
+                webClient.patch(rootCategoryLocation)
+                    .putHeader(CONTENT_TYPE.toString(), "application/json")
+                    .sendJson(patchRequest)
+                    .assertThat(context) {
+                        assertThat(it.getHeader(CONTENT_LOCATION.toString())).isEqualTo(rootCategoryLocation)
+                    }
+            }
+
+            @Test
+            @DisplayName("then categories visibility should get updated")
+            fun patchCategory(context: VertxTestContext) {
+                val patchRequest = PatchCategoryRequest(!rootCategoryRequest.visible)
+
+                runBlocking {
+                    webClient.patch(rootCategoryLocation)
+                        .putHeader(CONTENT_TYPE.toString(), "application/json")
+                        .sendJson(patchRequest)
+                        .await()
+                }
+
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThatJson(it.bodyAsString()) {
+                            inPath("$.visible").isEqualTo(patchRequest.visible)
+                        }
+                    }
+            }
+
+        }
+
+
+    }
+
+    @Nested
+    @DisplayName("When POST /categories")
+    internal inner class PostCategory {
+
+        @Test
+        @DisplayName("then 201 status code should get returned")
+        fun shouldReturn201(context: VertxTestContext) {
+            webClient.post("/categories")
+                .putHeader(CONTENT_TYPE.toString(), "application/json")
+                .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                .assertThat(context) {
+                    assertThat(it.statusCode()).isEqualTo(201)
+                }
+        }
+
+        @Test
+        @DisplayName("then location header to created category should get returned")
+        fun shouldReturnLocationHeader(context: VertxTestContext) {
+            webClient.post("/categories")
+                .putHeader(CONTENT_TYPE.toString(), "application/json")
+                .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                .assertThat(context) {
+                    assertThat(it.getHeader(LOCATION.toString())).matches("^\\/categories\\/[^\\s\\/]+$")
+                }
+        }
     }
 
     private fun <T> Future<HttpResponse<T>>.assertThat(context: VertxTestContext, verify: (HttpResponse<T>) -> Unit) {

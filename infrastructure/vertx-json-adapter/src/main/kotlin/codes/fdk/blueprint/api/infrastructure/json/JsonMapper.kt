@@ -76,7 +76,7 @@ object JsonMapper {
         return with(command) {
             JsonObject(
                 mapOf(
-                    "id" to Json.encode(id()),
+                    "id" to id().value(),
                     "visible" to visible()
                 )
             )
