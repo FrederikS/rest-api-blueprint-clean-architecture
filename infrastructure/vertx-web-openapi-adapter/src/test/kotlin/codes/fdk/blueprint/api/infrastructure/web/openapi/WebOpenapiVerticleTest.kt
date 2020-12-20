@@ -7,6 +7,7 @@ import io.vertx.core.http.HttpHeaders.ACCEPT
 import io.vertx.core.http.HttpHeaders.CONTENT_LOCATION
 import io.vertx.core.http.HttpHeaders.CONTENT_TYPE
 import io.vertx.core.http.HttpHeaders.ETAG
+import io.vertx.core.http.HttpHeaders.IF_NONE_MATCH
 import io.vertx.core.http.HttpHeaders.LOCATION
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.client.HttpResponse
@@ -18,14 +19,12 @@ import io.vertx.kotlin.coroutines.await
 import kotlinx.coroutines.runBlocking
 import net.javacrumbs.jsonunit.assertj.assertThatJson
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Condition
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.util.function.Consumer
 
 @ExtendWith(VertxExtension::class, ResetInMemoryRepoExtension::class)
 internal class WebOpenapiVerticleTest {
@@ -499,6 +498,133 @@ internal class WebOpenapiVerticleTest {
                 }
         }
 
+    }
+
+    @Nested
+    @DisplayName("Given a root category and valid etag header")
+    internal inner class ValidEtag {
+
+        private lateinit var eTag: String
+        private lateinit var rootCategoryLocation: String
+
+        @BeforeEach
+        fun setUp(context: VertxTestContext) {
+            webClient.post("/categories")
+                .putHeader(CONTENT_TYPE.toString(), "application/json")
+                .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                .compose {
+                    rootCategoryLocation = it.getHeader(LOCATION.toString())
+                    webClient.get(rootCategoryLocation)
+                        .putHeader(ACCEPT.toString(), "application/json")
+                        .send()
+                }
+                .onFailure { context.failNow(it) }
+                .onComplete {
+                    context.verify {
+                        eTag = it.result().getHeader(ETAG.toString())
+                        assertThat(eTag).isNotBlank()
+
+                        context.completeNow()
+                    }
+                }
+        }
+
+        @Nested
+        @DisplayName("when GET /categories/{id}")
+        internal inner class GetCategory {
+
+            @Test
+            @DisplayName("then status code 304 should get returned")
+            fun shouldReturn304(context: VertxTestContext) {
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    //TODO remove comma when bug is fixed
+                    .putHeader(IF_NONE_MATCH.toString(), "${eTag},")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.statusCode()).isEqualTo(304)
+                    }
+            }
+
+            @Test
+            @DisplayName("then eTag Header should get returned")
+            fun shouldReturnETagHeaderAgain(context: VertxTestContext) {
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    //TODO remove comma when bug is fixed
+                    .putHeader(IF_NONE_MATCH.toString(), "${eTag},")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.getHeader(ETAG.toString())).isEqualTo(eTag)
+                    }
+            }
+
+            @Test
+            @DisplayName("then no body should get returned")
+            fun shouldReturnEmptyBody(context: VertxTestContext) {
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    //TODO remove comma when bug is fixed
+                    .putHeader(IF_NONE_MATCH.toString(), "${eTag},")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.body()).isNull()
+                    }
+            }
+
+        }
+    }
+
+    @Nested
+    @DisplayName("Given a root category and an expired etag header")
+    internal inner class ExpiredEtag {
+
+        private lateinit var rootCategoryLocation: String
+
+        @BeforeEach
+        fun setUp(context: VertxTestContext) {
+            webClient.post("/categories")
+                .putHeader(CONTENT_TYPE.toString(), "application/json")
+                .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                .onFailure { context.failNow(it) }
+                .onComplete {
+                    context.verify {
+                        rootCategoryLocation = it.result().getHeader(LOCATION.toString())
+                        assertThat(rootCategoryLocation).isNotBlank()
+                        context.completeNow()
+                    }
+                }
+        }
+
+        @Nested
+        @DisplayName("when GET /categories/{id}")
+        internal inner class GetCategory {
+
+            @Test
+            @DisplayName("then status code 200 should get returned")
+            fun shouldReturn200(context: VertxTestContext) {
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .putHeader(IF_NONE_MATCH.toString(), "expired-etag")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.statusCode()).isEqualTo(200)
+                    }
+            }
+
+            @Test
+            @DisplayName("then a body should get returned")
+            fun shouldHaveABody(context: VertxTestContext) {
+                webClient.get(rootCategoryLocation)
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .putHeader(IF_NONE_MATCH.toString(), "expired-etag")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.body()).isNotNull
+                    }
+            }
+
+        }
     }
 
     private fun <T> Future<HttpResponse<T>>.assertThat(context: VertxTestContext, verify: (HttpResponse<T>) -> Unit) {

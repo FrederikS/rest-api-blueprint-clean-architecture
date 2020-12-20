@@ -12,12 +12,19 @@ import io.vertx.ext.web.RoutingContext
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitSingle
+import java.security.MessageDigest
 import java.util.NoSuchElementException
 
 class ApiHandler(private val categoryService: CategoryService) {
 
     companion object {
         private fun categoryLocationFor(category: Category): String = "/categories/${category.id()}"
+
+        private fun md5DigestAsHex(byteArray: ByteArray): String {
+            return MessageDigest.getInstance("MD5")
+                .digest(byteArray)
+                .joinToString("") { "%02x".format(it) }
+        }
     }
 
     val rootCategories: suspend (RoutingContext) -> Unit = { ctx ->
@@ -53,10 +60,18 @@ class ApiHandler(private val categoryService: CategoryService) {
                 .map(ResponseMapper::toResponse)
                 .awaitSingle()
                 .also {
-                    ctx.response()
-                        .setStatusCode(200)
-                        .putHeader(CONTENT_TYPE, "application/json")
-                        .end(Json.encode(it))
+                    ctx.etag(md5DigestAsHex(it.hashCode().toString().toByteArray()))
+
+                    if (ctx.isFresh) {
+                        ctx.response()
+                            .setStatusCode(304)
+                            .end()
+                    } else {
+                        ctx.response()
+                            .setStatusCode(200)
+                            .putHeader(CONTENT_TYPE, "application/json")
+                            .end(Json.encode(it))
+                    }
                 }
         } catch (e: NoSuchElementException) {
             ctx.response()
