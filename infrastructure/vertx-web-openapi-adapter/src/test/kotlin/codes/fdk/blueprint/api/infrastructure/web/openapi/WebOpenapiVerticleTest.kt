@@ -105,12 +105,12 @@ internal class WebOpenapiVerticleTest {
             webClient.post("/categories")
                 .putHeader(CONTENT_TYPE.toString(), "application/json")
                 .sendJson(rootCategoryRequest)
-                .onSuccess { context.completeNow() }
                 .onFailure { context.failNow(it) }
                 .onComplete {
                     context.verify {
                         rootCategoryLocation = it.result().getHeader(LOCATION.toString())
                         assertThat(rootCategoryLocation).isNotBlank()
+                        context.completeNow()
                     }
                 }
         }
@@ -309,23 +309,111 @@ internal class WebOpenapiVerticleTest {
                     }
             }
 
-            @Test
-            @DisplayName("then GET /categories/id location should get return parentId")
-            fun shouldReturnProperParentId(context: VertxTestContext) {
-                val childCategoryLocation = runBlocking {
-                    webClient.post(rootCategoryLocation)
-                        .putHeader(CONTENT_TYPE.toString(), "application/json")
-                        .sendJson(RandomDataProvider.randomPostCategoryRequest())
-                        .await()
-                        .getHeader(LOCATION.toString())
-                }
+        }
 
+    }
+
+    @Nested
+    @DisplayName("Given a root category and child category")
+    internal inner class RootAndChildCategoryGiven {
+
+        private lateinit var rootCategoryLocation: String
+        private lateinit var childCategoryLocation: String
+        private lateinit var childCategoryRequest: PostCategoryRequest
+
+        @BeforeEach
+        fun setUp(context: VertxTestContext) {
+            childCategoryRequest = RandomDataProvider.randomPostCategoryRequest()
+
+            webClient.post("/categories")
+                .putHeader(CONTENT_TYPE.toString(), "application/json")
+                .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                .compose {
+                    rootCategoryLocation = it.getHeader(LOCATION.toString())
+                    webClient.post(it.getHeader(LOCATION.toString()))
+                        .putHeader(CONTENT_TYPE.toString(), "application/json")
+                        .sendJson(childCategoryRequest)
+                }
+                .onFailure { context.failNow(it) }
+                .onComplete {
+                    context.verify {
+                        childCategoryLocation = it.result().getHeader(LOCATION.toString())
+                        assertThat(childCategoryLocation).isNotBlank()
+                        context.completeNow()
+                    }
+                }
+        }
+
+        @Nested
+        @DisplayName("when GET /categories/{id} for child category")
+        internal inner class GetChildCategory {
+
+            @Test
+            @DisplayName("then a parentId should be included in json response")
+            fun shouldContainParentId(context: VertxTestContext) {
                 webClient.get(childCategoryLocation)
                     .putHeader(ACCEPT.toString(), "application/json")
                     .send()
                     .assertThat(context) {
                         assertThatJson(it.bodyAsString()) {
                             inPath("$.parentId").asString().matches { id -> rootCategoryLocation.endsWith(id) }
+                        }
+                    }
+            }
+
+        }
+
+        @Nested
+        @DisplayName("when GET /categories/{id}/children")
+        internal inner class GetCategoryChildren {
+
+            @Test
+            @DisplayName("then status code 200 should get returned")
+            fun shouldReturn200(context: VertxTestContext) {
+                webClient.get("${rootCategoryLocation}/children")
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.statusCode()).isEqualTo(200)
+                    }
+            }
+
+            @Test
+            @DisplayName("then json content type should get returned")
+            fun shouldReturnJson(context: VertxTestContext) {
+                webClient.get("${rootCategoryLocation}/children")
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThat(it.getHeader(CONTENT_TYPE.toString())).isEqualTo("application/json")
+                    }
+            }
+
+            @Test
+            @DisplayName("then a list of children categories should get returned")
+            fun shouldReturnChildrenList(context: VertxTestContext) {
+                webClient.get("${rootCategoryLocation}/children")
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThatJson(it.bodyAsString()) {
+                            isArray.isNotEmpty.hasSize(1)
+                        }
+                    }
+            }
+
+            @Test
+            @DisplayName("then the children category in list should contain data from post-category-request")
+            fun shouldReturnChildrenData(context: VertxTestContext) {
+                webClient.get("${rootCategoryLocation}/children")
+                    .putHeader(ACCEPT.toString(), "application/json")
+                    .send()
+                    .assertThat(context) {
+                        assertThatJson(it.bodyAsString()) {
+                            inPath("$[0].name").isEqualTo(childCategoryRequest.name)
+                            inPath("$[0].slug").isEqualTo(childCategoryRequest.slug)
+                            inPath("$[0].visible").isEqualTo(childCategoryRequest.visible)
+                            inPath("$[0].parentId").asString().matches { id -> rootCategoryLocation.endsWith(id) }
                         }
                     }
             }
@@ -359,6 +447,58 @@ internal class WebOpenapiVerticleTest {
                     assertThat(it.getHeader(LOCATION.toString())).matches("^\\/categories\\/[^\\s\\/]+$")
                 }
         }
+
+    }
+
+    @Nested
+    @DisplayName("When GET /categories/{id} for non-existent id")
+    internal inner class GetNotExistentCategory {
+
+        @Test
+        @DisplayName("then status code 404 should get returned")
+        fun shouldReturn404(context: VertxTestContext) {
+            webClient.get("/categories/non-existent-id")
+                .putHeader(ACCEPT.toString(), "application/json")
+                .send()
+                .assertThat(context) {
+                    assertThat(it.statusCode()).isEqualTo(404)
+                }
+        }
+
+    }
+
+    @Nested
+    @DisplayName("When GET /categories/{id}/children for non-existent id")
+    internal inner class GetChildrenForNotExistentId {
+
+        @Test
+        @DisplayName("then status code 404 should get returned")
+        fun shouldReturn404(context: VertxTestContext) {
+            webClient.get("/categories/non-existent-id/children")
+                .putHeader(ACCEPT.toString(), "application/json")
+                .send()
+                .assertThat(context) {
+                    assertThat(it.statusCode()).isEqualTo(404)
+                }
+        }
+
+    }
+
+    @Nested
+    @DisplayName("When POST /categories/{id} for non-existent id")
+    internal inner class PostChildCategory {
+
+        @Test
+        @DisplayName("then status code 404 should get returned")
+        fun shouldReturn404(context: VertxTestContext) {
+            webClient.post("/categories/non-existent-id")
+                .putHeader(CONTENT_TYPE.toString(), "application/json")
+                .sendJson(RandomDataProvider.randomPostCategoryRequest())
+                .assertThat(context) {
+                    assertThat(it.statusCode()).isEqualTo(404)
+                }
+        }
+
     }
 
     private fun <T> Future<HttpResponse<T>>.assertThat(context: VertxTestContext, verify: (HttpResponse<T>) -> Unit) {

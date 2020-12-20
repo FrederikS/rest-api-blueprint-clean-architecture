@@ -12,6 +12,7 @@ import io.vertx.ext.web.RoutingContext
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitSingle
+import java.util.NoSuchElementException
 
 class ApiHandler(private val categoryService: CategoryService) {
 
@@ -19,7 +20,7 @@ class ApiHandler(private val categoryService: CategoryService) {
         private fun categoryLocationFor(category: Category): String = "/categories/${category.id()}"
     }
 
-    fun rootCategories(): suspend (RoutingContext) -> Unit = { ctx ->
+    val rootCategories: suspend (RoutingContext) -> Unit = { ctx ->
         categoryService.all()
             .map(ResponseMapper::toResponse)
             .asFlow()
@@ -32,7 +33,7 @@ class ApiHandler(private val categoryService: CategoryService) {
             }
     }
 
-    fun postCategory(): suspend (RoutingContext) -> Unit = { ctx ->
+    val postCategory: suspend (RoutingContext) -> Unit = { ctx ->
         ctx.bodyAsJson
             .mapTo(PostCategoryRequest::class.java)
             .let(CommandMapper::toCreateCommand)
@@ -46,19 +47,25 @@ class ApiHandler(private val categoryService: CategoryService) {
             }
     }
 
-    fun getCategory(): suspend (RoutingContext) -> Unit = { ctx ->
-        categoryService.byId(CategoryId.of(ctx.pathParam("id")))
-            .map(ResponseMapper::toResponse)
-            .awaitSingle()
-            .also {
-                ctx.response()
-                    .setStatusCode(200)
-                    .putHeader(CONTENT_TYPE, "application/json")
-                    .end(Json.encode(it))
-            }
+    val getCategory: suspend (RoutingContext) -> Unit = { ctx ->
+        try {
+            categoryService.byId(CategoryId.of(ctx.pathParam("id")))
+                .map(ResponseMapper::toResponse)
+                .awaitSingle()
+                .also {
+                    ctx.response()
+                        .setStatusCode(200)
+                        .putHeader(CONTENT_TYPE, "application/json")
+                        .end(Json.encode(it))
+                }
+        } catch (e: NoSuchElementException) {
+            ctx.response()
+                .setStatusCode(404)
+                .end()
+        }
     }
 
-    fun updateCategory(): suspend (RoutingContext) -> Unit = { ctx ->
+    val updateCategory: suspend (RoutingContext) -> Unit = { ctx ->
         ctx.bodyAsJson
             .mapTo(PatchCategoryRequest::class.java)
             .let { CommandMapper.toUpdateCommand(CategoryId.of(ctx.pathParam("id")), it) }
@@ -72,18 +79,49 @@ class ApiHandler(private val categoryService: CategoryService) {
             }
     }
 
-    fun postChildCategory(): suspend (RoutingContext) -> Unit = { ctx ->
-        ctx.bodyAsJson
-            .mapTo(PostCategoryRequest::class.java)
-            .let { CommandMapper.toCreateCommand(CategoryId.of(ctx.pathParam("id")), it) }
-            .let(categoryService::create)
-            .awaitSingle()
-            .also {
-                ctx.response()
-                    .setStatusCode(201)
-                    .putHeader(LOCATION, categoryLocationFor(it))
-                    .end()
-            }
+    val postChildCategory: suspend (RoutingContext) -> Unit = { ctx ->
+        val parentId = CategoryId.of(ctx.pathParam("id"))
+
+        try {
+            categoryService.byId(parentId).awaitSingle()
+            ctx.bodyAsJson
+                .mapTo(PostCategoryRequest::class.java)
+                .let { CommandMapper.toCreateCommand(parentId, it) }
+                .let(categoryService::create)
+                .awaitSingle()
+                .also {
+                    ctx.response()
+                        .setStatusCode(201)
+                        .putHeader(LOCATION, categoryLocationFor(it))
+                        .end()
+                }
+        } catch (e: NoSuchElementException) {
+            ctx.response()
+                .setStatusCode(404)
+                .end()
+        }
+    }
+
+    val getChildCategories: suspend (RoutingContext) -> Unit = { ctx ->
+        val parentId = CategoryId.of(ctx.pathParam("id"))
+
+        try {
+            categoryService.byId(parentId).awaitSingle()
+            categoryService.children(parentId)
+                .map(ResponseMapper::toResponse)
+                .asFlow()
+                .fold(JsonArray()) { acc, value -> acc.add(value) }
+                .also {
+                    ctx.response()
+                        .setStatusCode(200)
+                        .putHeader(CONTENT_TYPE, "application/json")
+                        .end(it.encode())
+                }
+        } catch (e: NoSuchElementException) {
+            ctx.response()
+                .setStatusCode(404)
+                .end()
+        }
     }
 
 }

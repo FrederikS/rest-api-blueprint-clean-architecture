@@ -66,7 +66,7 @@ class CategoryServiceEBProxyHandler : Handler<Message<JsonObject>> {
 
     private fun findChildCategories(message: Message<JsonObject>) {
         message.body()
-            .mapTo(CategoryId::class.java)
+            .let(JsonMapper::toCategoryId)
             .let(categoryService::children)
             .map(JsonMapper::fromCategory)
             .reduce(JsonArray(), { array, category -> array.add(category) })

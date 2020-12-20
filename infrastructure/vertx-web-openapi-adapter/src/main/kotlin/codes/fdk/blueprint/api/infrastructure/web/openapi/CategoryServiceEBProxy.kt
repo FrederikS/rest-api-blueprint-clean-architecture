@@ -79,7 +79,7 @@ class CategoryServiceEBProxy(private val vertx: Vertx) : CategoryService {
     override fun children(parentId: CategoryId): Flux<Category> {
         return flux {
             vertx.eventBus()
-                .request<JsonArray>(ADDRESS, JsonObject.mapFrom(parentId), action(FindChildren))
+                .request<JsonArray>(ADDRESS, JsonMapper.fromCategoryId(parentId), action(FindChildren))
                 .await()
                 .body()
                 .map { it as JsonObject }
