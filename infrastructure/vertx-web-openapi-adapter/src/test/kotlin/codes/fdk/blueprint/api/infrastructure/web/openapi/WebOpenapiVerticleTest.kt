@@ -1,5 +1,7 @@
 package codes.fdk.blueprint.api.infrastructure.web.openapi
 
+import codes.fdk.blueprint.api.domain.service.CategoryService
+import codes.fdk.blueprint.api.domain.stub.InMemoryCategoryRepository
 import codes.fdk.blueprint.api.domain.stub.ResetInMemoryRepoExtension
 import io.vertx.core.Future
 import io.vertx.core.Vertx
@@ -42,7 +44,7 @@ internal class WebOpenapiVerticleTest {
 
             vertx.eventBus()
                 .localConsumer<JsonObject>(CategoryServiceEBProxy.ADDRESS)
-                .handler(CategoryServiceEBProxyHandler())
+                .handler(CategoryServiceEBProxyHandler(CategoryService.create(InMemoryCategoryRepository())))
 
             vertx.deployVerticle(WebOpenapiVerticle())
                 .onComplete(context.succeedingThenComplete())

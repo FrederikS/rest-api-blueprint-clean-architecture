@@ -1,9 +1,7 @@
 package codes.fdk.blueprint.api.infrastructure.web.openapi
 
 import codes.fdk.blueprint.api.domain.model.Category
-import codes.fdk.blueprint.api.domain.model.CategoryId
 import codes.fdk.blueprint.api.domain.service.CategoryService
-import codes.fdk.blueprint.api.domain.stub.InMemoryCategoryRepository
 import codes.fdk.blueprint.api.infrastructure.json.JsonMapper
 import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action
 import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action.Create
@@ -17,9 +15,7 @@ import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import reactor.core.publisher.Mono
 
-class CategoryServiceEBProxyHandler : Handler<Message<JsonObject>> {
-
-    private val categoryService = CategoryService.create(InMemoryCategoryRepository())
+class CategoryServiceEBProxyHandler(private val delegate: CategoryService) : Handler<Message<JsonObject>> {
 
     override fun handle(message: Message<JsonObject>) {
         when (Action.of(message.headers()["action"])) {
@@ -35,7 +31,7 @@ class CategoryServiceEBProxyHandler : Handler<Message<JsonObject>> {
     private fun createCategory(message: Message<JsonObject>) {
         message.body()
             .let(JsonMapper::toCreateCategoryCommand)
-            .let(categoryService::create)
+            .let(delegate::create)
             .map(JsonMapper::fromCategory)
             .subscribe(message::reply) { message.fail(500, it.message) }
     }
@@ -43,7 +39,7 @@ class CategoryServiceEBProxyHandler : Handler<Message<JsonObject>> {
     private fun updateCategory(message: Message<JsonObject>) {
         message.body()
             .let(JsonMapper::toUpdateCategoryCommand)
-            .let(categoryService::update)
+            .let(delegate::update)
             .map(JsonMapper::fromCategory)
             .subscribe(message::reply) { message.fail(500, it.message) }
     }
@@ -51,14 +47,14 @@ class CategoryServiceEBProxyHandler : Handler<Message<JsonObject>> {
     private fun findCategoryById(message: Message<JsonObject>) {
         message.body()
             .let(JsonMapper::toCategoryId)
-            .let(categoryService::byId)
+            .let(delegate::byId)
             .switchIfEmpty(Mono.empty<Category>().doOnSubscribe { message.fail(404, "Not Found.") })
             .map(JsonMapper::fromCategory)
             .subscribe(message::reply) { message.fail(500, it.message) }
     }
 
     private fun findAllCategories(message: Message<JsonObject>) {
-        categoryService.all()
+        delegate.all()
             .map(JsonMapper::fromCategory)
             .reduce(JsonArray(), { array, category -> array.add(category) })
             .subscribe(message::reply) { message.fail(500, it.message) }
@@ -67,7 +63,7 @@ class CategoryServiceEBProxyHandler : Handler<Message<JsonObject>> {
     private fun findChildCategories(message: Message<JsonObject>) {
         message.body()
             .let(JsonMapper::toCategoryId)
-            .let(categoryService::children)
+            .let(delegate::children)
             .map(JsonMapper::fromCategory)
             .reduce(JsonArray(), { array, category -> array.add(category) })
             .subscribe(message::reply) { message.fail(500, it.message) }

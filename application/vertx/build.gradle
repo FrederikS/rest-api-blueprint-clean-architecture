@@ -1,0 +1,26 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'application'
+}
+
+dependencies {
+    implementation project(':infrastructure:vertx-postgres-persistence-adapter')
+    implementation project(':infrastructure:vertx-web-openapi-adapter')
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'io.vertx:vertx-config'
+    runtimeOnly 'ch.qos.logback:logback-classic'
+
+    testImplementation 'io.vertx:vertx-junit5'
+    testImplementation 'org.assertj:assertj-core'
+}
+
+application {
+    mainClassName = 'codes.fdk.blueprint.api.application.vertx.CategoryApiApplicationKt'
+}
+
+run {
+    jvmArgs = ['--enable-preview', '-Dvertx.disableDnsResolver=true']
+}

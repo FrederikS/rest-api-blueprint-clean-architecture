@@ -1,6 +1,7 @@
 package codes.fdk.blueprint.api.infrastructure.persistence.postgres
 
 import codes.fdk.blueprint.api.domain.model.Category
+import codes.fdk.blueprint.api.domain.spi.CategoryRepository
 import codes.fdk.blueprint.api.infrastructure.json.JsonMapper
 import codes.fdk.blueprint.api.infrastructure.persistence.postgres.CategoryRepositoryEBProxy.Action
 import codes.fdk.blueprint.api.infrastructure.persistence.postgres.CategoryRepositoryEBProxy.Action.FindAll
@@ -19,7 +20,7 @@ import java.util.UUID
 // TODO use coroutineScope?
 internal class CategoryRepositoryEBProxyHandler(
     private val vertx: Vertx,
-    private val categoryEntityRepositoryAdapter: CategoryEntityRepositoryAdapter
+    private val delegate: CategoryRepository
 ) : Handler<Message<JsonObject>> {
 
     override fun handle(message: Message<JsonObject>) {
@@ -33,14 +34,14 @@ internal class CategoryRepositoryEBProxyHandler(
     }
 
     private fun save(message: Message<JsonObject>) {
-        categoryEntityRepositoryAdapter
+        delegate
             .save(JsonMapper.toCategory(message.body()))
             .map(JsonMapper::fromCategory)
             .subscribe(message::reply) { message.fail(500, it.message) }
     }
 
     private fun findById(message: Message<JsonObject>) {
-        categoryEntityRepositoryAdapter
+        delegate
             .findById(JsonMapper.toCategoryId(message.body()))
             .map(JsonMapper::fromCategory)
             .switchIfEmpty(Mono.empty<JsonObject>().doOnSubscribe { message.fail(404, "Not Found.") })
@@ -50,7 +51,7 @@ internal class CategoryRepositoryEBProxyHandler(
     private fun findAll(message: Message<JsonObject>) {
         vertx.eventBus()
             .publisher<JsonObject>("categories-find-all-${UUID.randomUUID()}")
-            .streamWhenRecipientReady(message) { categoryEntityRepositoryAdapter.findAll() }
+            .streamWhenRecipientReady(message) { delegate.findAll() }
     }
 
     private fun findByParentId(message: Message<JsonObject>) {
@@ -58,7 +59,7 @@ internal class CategoryRepositoryEBProxyHandler(
 
         vertx.eventBus()
             .publisher<JsonObject>("categories-find-by-parent-id-${UUID.randomUUID()}")
-            .streamWhenRecipientReady(message) { categoryEntityRepositoryAdapter.findByParentId(parentId) }
+            .streamWhenRecipientReady(message) { delegate.findByParentId(parentId) }
     }
 
     private fun MessageProducer<JsonObject>.streamWhenRecipientReady(
