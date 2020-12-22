@@ -44,7 +44,7 @@ class PostgresPersistenceVerticle : CoroutineVerticle() {
 
         categoryRepositoryEBProxyConsumer = vertx.eventBus()
             .localConsumer<JsonObject>(CategoryRepositoryEBProxy.ADDRESS)
-            .handler(CategoryRepositoryEBProxyHandler(vertx, categoryEntityRepositoryAdapter))
+            .handler(CategoryRepositoryEBProxyHandler(categoryEntityRepositoryAdapter))
     }
 
     override suspend fun stop() {

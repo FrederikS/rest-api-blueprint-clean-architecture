@@ -9,12 +9,10 @@ import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxy
 import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxy.Action.Save
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.DeliveryOptions
-import io.vertx.core.eventbus.EventBus
 import io.vertx.core.eventbus.ReplyException
+import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.coroutines.await
-import io.vertx.kotlin.coroutines.toChannel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.reactor.flux
 import kotlinx.coroutines.reactor.mono
 import reactor.core.publisher.Flux
@@ -39,7 +37,15 @@ class CategoryRepositoryEBProxy(private val vertx: Vertx) : CategoryRepository {
     }
 
     override fun findAll(): Flux<Category> {
-        return vertx.eventBus().requestStream(ADDRESS, null, action(FindAll))
+        return flux {
+            vertx.eventBus()
+                .request<JsonArray>(ADDRESS, null, action(FindAll))
+                .await()
+                .body()
+                .map { it as JsonObject }
+                .map(JsonMapper::toCategory)
+                .forEach { send(it) }
+        }
     }
 
     override fun findById(id: CategoryId): Mono<Category> {
@@ -57,28 +63,14 @@ class CategoryRepositoryEBProxy(private val vertx: Vertx) : CategoryRepository {
     }
 
     override fun findByParentId(parentId: CategoryId): Flux<Category> {
-        return vertx.eventBus().requestStream(ADDRESS, JsonMapper.fromCategoryId(parentId), action(FindByParentId))
-    }
-
-    //TODO measure if custom streaming is less performant then sending lists around
-    private fun EventBus.requestStream(
-        address: String,
-        message: JsonObject?,
-        deliveryOptions: DeliveryOptions
-    ): Flux<Category> {
         return flux {
-            val replyWithAddress = request<String>(address, message, deliveryOptions).await()
-
-            val consumer = vertx.eventBus().localConsumer<JsonObject>(replyWithAddress.body())
-            consumer.completionHandler { replyWithAddress.reply(null) }
-
-            consumer.bodyStream().toChannel(vertx).consumeEach {
-                if (it != null) {
-                    send(JsonMapper.toCategory(it))
-                } else {
-                    consumer.unregister()
-                }
-            }
+            vertx.eventBus()
+                .request<JsonArray>(ADDRESS, JsonMapper.fromCategoryId(parentId), action(FindByParentId))
+                .await()
+                .body()
+                .map { it as JsonObject }
+                .map(JsonMapper::toCategory)
+                .forEach { send(it) }
         }
     }
 
