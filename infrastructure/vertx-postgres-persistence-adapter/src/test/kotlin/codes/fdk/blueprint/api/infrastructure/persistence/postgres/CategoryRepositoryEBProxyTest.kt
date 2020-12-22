@@ -5,6 +5,7 @@ import codes.fdk.blueprint.api.domain.RandomDataProvider.randomCategoryWithId
 import codes.fdk.blueprint.api.domain.RandomDataProvider.randomChildCategory
 import codes.fdk.blueprint.api.domain.RandomDataProvider.randomId
 import codes.fdk.blueprint.api.domain.model.Category
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxy
 import io.vertx.config.ConfigRetriever
 import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx

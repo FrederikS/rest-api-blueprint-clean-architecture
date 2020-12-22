@@ -1,6 +1,6 @@
 module codes.fdk.blueprint.api.infrastructure.persistence.postgres {
     requires transitive codes.fdk.blueprint.api.domain;
-    requires codes.fdk.blueprint.api.infrastructure.json;
+    requires codes.fdk.blueprint.api.infrastructure.eventbus;
 
     requires org.slf4j;
     requires kotlin.stdlib;

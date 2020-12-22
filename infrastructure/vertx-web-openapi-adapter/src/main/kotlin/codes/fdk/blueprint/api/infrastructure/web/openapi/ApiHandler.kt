@@ -15,7 +15,7 @@ import kotlinx.coroutines.reactive.awaitSingle
 import java.security.MessageDigest
 import java.util.NoSuchElementException
 
-class ApiHandler(private val categoryService: CategoryService) {
+internal class ApiHandler(private val categoryService: CategoryService) {
 
     companion object {
         private fun categoryLocationFor(category: Category): String = "/categories/${category.id()}"

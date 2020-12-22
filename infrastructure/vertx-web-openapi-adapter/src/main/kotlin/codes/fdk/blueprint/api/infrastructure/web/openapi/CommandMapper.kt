@@ -4,7 +4,7 @@ import codes.fdk.blueprint.api.domain.command.CreateCategoryCommand
 import codes.fdk.blueprint.api.domain.command.UpdateCategoryCommand
 import codes.fdk.blueprint.api.domain.model.CategoryId
 
-object CommandMapper {
+internal object CommandMapper {
 
     fun toCreateCommand(request: PostCategoryRequest): CreateCategoryCommand {
         return CreateCategoryCommand.createRootCategoryCommand(

@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     api project(':domain')
-    implementation project(':infrastructure:vertx-json-adapter')
+    implementation project(':infrastructure:vertx-eventbus-adapter')
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'

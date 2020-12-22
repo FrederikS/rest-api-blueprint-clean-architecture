@@ -1,5 +1,6 @@
 package codes.fdk.blueprint.api.infrastructure.web.openapi
 
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryServiceEBProxy
 import io.vertx.core.Context
 import io.vertx.core.Vertx
 import io.vertx.ext.web.Router

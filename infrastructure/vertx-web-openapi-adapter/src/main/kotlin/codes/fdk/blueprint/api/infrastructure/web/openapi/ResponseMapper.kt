@@ -2,7 +2,7 @@ package codes.fdk.blueprint.api.infrastructure.web.openapi
 
 import codes.fdk.blueprint.api.domain.model.Category
 
-object ResponseMapper {
+internal object ResponseMapper {
 
     fun toResponse(category: Category): CategoryResponse {
         return CategoryResponse(

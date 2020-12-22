@@ -3,6 +3,8 @@ package codes.fdk.blueprint.api.infrastructure.web.openapi
 import codes.fdk.blueprint.api.domain.service.CategoryService
 import codes.fdk.blueprint.api.domain.stub.InMemoryCategoryRepository
 import codes.fdk.blueprint.api.domain.stub.ResetInMemoryRepoExtension
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryServiceEBProxy
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryServiceEBProxyHandler
 import io.vertx.core.Future
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpHeaders.ACCEPT

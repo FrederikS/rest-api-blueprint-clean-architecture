@@ -2,7 +2,7 @@ package codes.fdk.blueprint.api.infrastructure.web.openapi
 
 import com.github.javafaker.Faker
 
-object RandomDataProvider {
+internal object RandomDataProvider {
 
     private val FAKER = Faker()
 

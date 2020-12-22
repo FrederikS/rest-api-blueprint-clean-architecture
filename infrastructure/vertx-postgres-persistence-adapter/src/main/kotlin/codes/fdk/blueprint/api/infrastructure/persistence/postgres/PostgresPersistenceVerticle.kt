@@ -1,5 +1,7 @@
 package codes.fdk.blueprint.api.infrastructure.persistence.postgres
 
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxy
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxyHandler
 import io.vertx.core.Context
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.MessageConsumer

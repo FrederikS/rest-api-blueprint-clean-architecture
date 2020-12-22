@@ -4,8 +4,10 @@ plugins {
 }
 
 dependencies {
-    implementation project(':infrastructure:vertx-postgres-persistence-adapter')
+    implementation project(':infrastructure:vertx-eventbus-adapter')
     implementation project(':infrastructure:vertx-web-openapi-adapter')
+    implementation project(':infrastructure:vertx-postgres-persistence-adapter')
+
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'

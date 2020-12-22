@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonInclude(NON_NULL)
-data class CategoryResponse(
+internal data class CategoryResponse(
     @get:JsonProperty("id") val id: CategoryId,
     @get:JsonProperty("name") val name: String,
     @get:JsonProperty("slug") val slug: String,

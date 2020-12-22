@@ -1,13 +1,12 @@
-package codes.fdk.blueprint.api.infrastructure.persistence.postgres
+package codes.fdk.blueprint.api.infrastructure.eventbus
 
 import codes.fdk.blueprint.api.domain.model.Category
 import codes.fdk.blueprint.api.domain.spi.CategoryRepository
-import codes.fdk.blueprint.api.infrastructure.json.JsonMapper
-import codes.fdk.blueprint.api.infrastructure.persistence.postgres.CategoryRepositoryEBProxy.Action
-import codes.fdk.blueprint.api.infrastructure.persistence.postgres.CategoryRepositoryEBProxy.Action.FindAll
-import codes.fdk.blueprint.api.infrastructure.persistence.postgres.CategoryRepositoryEBProxy.Action.FindById
-import codes.fdk.blueprint.api.infrastructure.persistence.postgres.CategoryRepositoryEBProxy.Action.FindByParentId
-import codes.fdk.blueprint.api.infrastructure.persistence.postgres.CategoryRepositoryEBProxy.Action.Save
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxy.Action
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxy.Action.FindAll
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxy.Action.FindById
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxy.Action.FindByParentId
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxy.Action.Save
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
@@ -18,7 +17,7 @@ import reactor.core.publisher.Mono
 import java.util.UUID
 
 // TODO use coroutineScope?
-internal class CategoryRepositoryEBProxyHandler(
+class CategoryRepositoryEBProxyHandler(
     private val vertx: Vertx,
     private val delegate: CategoryRepository
 ) : Handler<Message<JsonObject>> {

@@ -1,16 +1,15 @@
-package codes.fdk.blueprint.api.infrastructure.web.openapi
+package codes.fdk.blueprint.api.infrastructure.eventbus
 
 import codes.fdk.blueprint.api.domain.command.CreateCategoryCommand
 import codes.fdk.blueprint.api.domain.command.UpdateCategoryCommand
 import codes.fdk.blueprint.api.domain.model.Category
 import codes.fdk.blueprint.api.domain.model.CategoryId
 import codes.fdk.blueprint.api.domain.service.CategoryService
-import codes.fdk.blueprint.api.infrastructure.json.JsonMapper
-import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action.Create
-import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action.FindAll
-import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action.FindById
-import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action.FindChildren
-import codes.fdk.blueprint.api.infrastructure.web.openapi.CategoryServiceEBProxy.Action.Update
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryServiceEBProxy.Action.Create
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryServiceEBProxy.Action.FindAll
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryServiceEBProxy.Action.FindById
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryServiceEBProxy.Action.FindChildren
+import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryServiceEBProxy.Action.Update
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.eventbus.ReplyException

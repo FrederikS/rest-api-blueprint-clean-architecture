@@ -10,6 +10,8 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+    implementation 'io.vertx:vertx-lang-kotlin-coroutines'
 
     testImplementation 'io.vertx:vertx-junit5'
     testImplementation 'org.assertj:assertj-core'
@@ -17,6 +19,6 @@ dependencies {
 
 compileJava {
     options.compilerArgs += [
-            '--patch-module', "codes.fdk.blueprint.api.infrastructure.json=${sourceSets.main.output.asPath}"
+            '--patch-module', "codes.fdk.blueprint.api.infrastructure.eventbus=${sourceSets.main.output.asPath}"
     ]
 }

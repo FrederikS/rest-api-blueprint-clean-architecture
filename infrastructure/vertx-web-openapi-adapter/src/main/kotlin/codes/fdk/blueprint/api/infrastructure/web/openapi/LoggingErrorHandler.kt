@@ -5,7 +5,7 @@ import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.handler.ErrorHandler
 import org.slf4j.LoggerFactory
 
-class LoggingErrorHandler(private val delegate: ErrorHandler) : Handler<RoutingContext> {
+internal class LoggingErrorHandler(private val delegate: ErrorHandler) : Handler<RoutingContext> {
 
     companion object {
         private val logger = LoggerFactory.getLogger(LoggingErrorHandler::class.java)

@@ -1,14 +1,13 @@
-package codes.fdk.blueprint.api.infrastructure.json
+package codes.fdk.blueprint.api.infrastructure.eventbus
 
 import codes.fdk.blueprint.api.domain.command.CreateCategoryCommand
 import codes.fdk.blueprint.api.domain.command.UpdateCategoryCommand
 import codes.fdk.blueprint.api.domain.model.Category
 import codes.fdk.blueprint.api.domain.model.CategoryId
-import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 
 //TODO checkout https://vertx.io/docs/vertx-json-schema/java/
-object JsonMapper {
+internal object JsonMapper {
 
     fun fromCategoryId(id: CategoryId): JsonObject {
         return JsonObject(mapOf(
