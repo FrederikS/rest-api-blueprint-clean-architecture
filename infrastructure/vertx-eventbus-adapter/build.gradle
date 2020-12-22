@@ -19,6 +19,6 @@ dependencies {
 
 compileJava {
     options.compilerArgs += [
-            '--patch-module', "codes.fdk.blueprint.api.infrastructure.eventbus=${sourceSets.main.output.asPath}"
+            '--patch-module', "codes.fdk.blueprint.api.infrastructure.vertx.eventbus=${sourceSets.main.output.asPath}"
     ]
 }

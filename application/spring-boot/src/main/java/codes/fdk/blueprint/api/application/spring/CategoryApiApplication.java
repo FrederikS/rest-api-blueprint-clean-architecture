@@ -2,8 +2,8 @@ package codes.fdk.blueprint.api.application.spring;
 
 import codes.fdk.blueprint.api.domain.service.CategoryService;
 import codes.fdk.blueprint.api.domain.spi.CategoryRepository;
-import codes.fdk.blueprint.api.infrastructure.persistence.r2dbc.R2dbcPersistenceModule;
-import codes.fdk.blueprint.api.infrastructure.rest.webflux.RestApiConfig;
+import codes.fdk.blueprint.api.infrastructure.spring.persistence.r2dbc.R2dbcPersistenceModule;
+import codes.fdk.blueprint.api.infrastructure.spring.rest.webflux.RestApiConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

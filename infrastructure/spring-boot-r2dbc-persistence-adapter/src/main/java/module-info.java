@@ -1,4 +1,4 @@
-module codes.fdk.blueprint.api.infrastructure.persistence.r2dbc {
+module codes.fdk.blueprint.api.infrastructure.spring.persistence.r2dbc {
     requires transitive codes.fdk.blueprint.api.domain;
 
     requires spring.core;
@@ -12,5 +12,5 @@ module codes.fdk.blueprint.api.infrastructure.persistence.r2dbc {
     requires r2dbc.spi;
     requires org.mapstruct;
 
-    exports codes.fdk.blueprint.api.infrastructure.persistence.r2dbc;
+    exports codes.fdk.blueprint.api.infrastructure.spring.persistence.r2dbc;
 }

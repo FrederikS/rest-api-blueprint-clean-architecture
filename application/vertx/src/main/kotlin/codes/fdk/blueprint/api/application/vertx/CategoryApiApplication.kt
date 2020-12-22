@@ -1,11 +1,11 @@
 package codes.fdk.blueprint.api.application.vertx
 
 import codes.fdk.blueprint.api.domain.service.CategoryService
-import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryRepositoryEBProxy
-import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryServiceEBProxy
-import codes.fdk.blueprint.api.infrastructure.eventbus.CategoryServiceEBProxyHandler
-import codes.fdk.blueprint.api.infrastructure.persistence.postgres.PostgresPersistenceVerticle
-import codes.fdk.blueprint.api.infrastructure.web.openapi.WebOpenapiVerticle
+import codes.fdk.blueprint.api.infrastructure.vertx.eventbus.CategoryRepositoryEBProxy
+import codes.fdk.blueprint.api.infrastructure.vertx.eventbus.CategoryServiceEBProxy
+import codes.fdk.blueprint.api.infrastructure.vertx.eventbus.CategoryServiceEBProxyHandler
+import codes.fdk.blueprint.api.infrastructure.vertx.persistence.postgres.PostgresPersistenceVerticle
+import codes.fdk.blueprint.api.infrastructure.vertx.web.openapi.WebOpenapiVerticle
 import io.vertx.config.ConfigRetriever
 import io.vertx.config.ConfigRetrieverOptions
 import io.vertx.core.CompositeFuture

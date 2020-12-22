@@ -1,4 +1,4 @@
-module codes.fdk.blueprint.api.infrastructure.eventbus {
+module codes.fdk.blueprint.api.infrastructure.vertx.eventbus {
     requires transitive codes.fdk.blueprint.api.domain;
 
     requires reactor.core;
@@ -8,5 +8,5 @@ module codes.fdk.blueprint.api.infrastructure.eventbus {
     requires kotlinx.coroutines.core;
     requires kotlinx.coroutines.reactor;
 
-    exports codes.fdk.blueprint.api.infrastructure.eventbus;
+    exports codes.fdk.blueprint.api.infrastructure.vertx.eventbus;
 }

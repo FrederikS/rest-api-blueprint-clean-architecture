@@ -32,6 +32,6 @@ dependencies {
 
 compileJava {
     options.compilerArgs += [
-            '--patch-module', "codes.fdk.blueprint.api.infrastructure.web.openapi=${sourceSets.main.output.asPath}"
+            '--patch-module', "codes.fdk.blueprint.api.infrastructure.vertx.web.openapi=${sourceSets.main.output.asPath}"
     ]
 }
