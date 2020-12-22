@@ -1,8 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
     id 'java-library'
-    //TODO remove
-    id 'application'
 }
 
 ext {
@@ -32,13 +30,8 @@ dependencies {
     testImplementation "net.javacrumbs.json-unit:json-unit-json-path:$jsonUnitVersion"
 }
 
-//TODO remove
-application {
-    mainClassName = 'io.vertx.core.Launcher'
-}
-
-//TODO remove
-run {
-    jvmArgs = ['--enable-preview']
-    args = ['run', 'codes.fdk.blueprint.api.infrastructure.web.openapi.WebOpenapiVerticle', "--launcher-class=${application.mainClassName}"]
+compileJava {
+    options.compilerArgs += [
+            '--patch-module', "codes.fdk.blueprint.api.infrastructure.web.openapi=${sourceSets.main.output.asPath}"
+    ]
 }
