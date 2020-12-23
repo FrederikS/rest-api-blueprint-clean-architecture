@@ -51,7 +51,7 @@ class WebOpenapiVerticle : CoroutineVerticle() {
 
         vertx.createHttpServer()
             .requestHandler(router)
-            .listen(8080)
+            .listen(config.getInteger("HTTP_PORT", 8080))
             .onSuccess { LOG.info("Running on port: ${it.actualPort()}") }
             .await()
     }

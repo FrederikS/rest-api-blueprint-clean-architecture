@@ -22,14 +22,12 @@ class PostgresPersistenceVerticle : CoroutineVerticle() {
     override fun init(vertx: Vertx, context: Context) {
         super.init(vertx, context)
 
-        val connectOptions = with(context.config()) {
-            PgConnectOptions().apply {
-                host = this@with.getString("PGHOST", "localhost")
-                port = this@with.getInteger("PGPORT", 5432)
-                user = this@with.getString("PGUSERNAME", "postgres")
-                password = this@with.getString("PGPASSWORD", "pw")
-                database = this@with.getString("PGDATABASE", "postgres")
-            }
+        val connectOptions = PgConnectOptions().apply {
+            host = config.getString("PGHOST")
+            port = config.getInteger("PGPORT")
+            user = config.getString("PGUSERNAME")
+            password = config.getString("PGPASSWORD")
+            database = config.getString("PGDATABASE")
         }
 
         pgClient = PgPool.pool(vertx, connectOptions, PoolOptions())

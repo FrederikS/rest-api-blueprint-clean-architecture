@@ -1,6 +1,7 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
     id 'application'
+    id 'com.google.cloud.tools.jib' version '2.7.0'
 }
 
 dependencies {
@@ -25,4 +26,18 @@ application {
 
 run {
     jvmArgs = ['--enable-preview', '-Dvertx.disableDnsResolver=true']
+}
+
+jib {
+    from {
+        image = 'openjdk:15-slim'
+    }
+    container {
+        ports = ['8080']
+        jvmFlags = [
+                '--enable-preview',
+                '-Dvertx.disableDnsResolver=true',
+                '-Dvertx-config-path=/workspace/config/config.json'
+        ]
+    }
 }

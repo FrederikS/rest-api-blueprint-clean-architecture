@@ -7,15 +7,16 @@ import codes.fdk.blueprint.api.infrastructure.vertx.eventbus.CategoryServiceEBPr
 import codes.fdk.blueprint.api.infrastructure.vertx.persistence.postgres.PostgresPersistenceVerticle
 import codes.fdk.blueprint.api.infrastructure.vertx.web.openapi.WebOpenapiVerticle
 import io.vertx.config.ConfigRetriever
-import io.vertx.config.ConfigRetrieverOptions
 import io.vertx.core.CompositeFuture
 import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx
 import io.vertx.core.impl.logging.LoggerFactory
 import io.vertx.core.json.JsonObject
+import kotlin.system.exitProcess
 
 private val log = LoggerFactory.getLogger("CategoryApiApplication")
 
+//TODO health-check
 fun main() {
     val vertx = Vertx.vertx()
     val categoryService = CategoryService.create(CategoryRepositoryEBProxy(vertx))
@@ -24,7 +25,7 @@ fun main() {
         .localConsumer<JsonObject>(CategoryServiceEBProxy.ADDRESS)
         .handler(CategoryServiceEBProxyHandler(categoryService))
 
-    ConfigRetriever.create(vertx, ConfigRetrieverOptions())
+    ConfigRetriever.create(vertx)
         .config
         .compose {
             val deploymentOptions = DeploymentOptions().setConfig(it)
@@ -33,6 +34,9 @@ fun main() {
                 vertx.deployVerticle(PostgresPersistenceVerticle(), deploymentOptions),
             )
         }
-        .onFailure { log.error("Deployment failed!", it) }
         .onSuccess { log.info("Deployment successful!") }
+        .onFailure {
+            log.error("Deployment failed!", it)
+            exitProcess(-1)
+        }
 }

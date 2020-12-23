@@ -2,12 +2,12 @@ bases:
   - ../base
   - ../base/postgres
 
-namePrefix: spring-
+namePrefix: vertx-
 
 configMapGenerator:
   - name: category-api-config
     files:
-      - application.yml
+      - config.json
 
 secretGenerator:
   - name: postgres-secret
@@ -17,4 +17,7 @@ secretGenerator:
 
 images:
   - name: blueprint/category-api
-    newName: blueprint/category-api-spring
+    newName: blueprint/category-api-vertx
+
+patchesStrategicMerge:
+  - pg-secret-env.yaml

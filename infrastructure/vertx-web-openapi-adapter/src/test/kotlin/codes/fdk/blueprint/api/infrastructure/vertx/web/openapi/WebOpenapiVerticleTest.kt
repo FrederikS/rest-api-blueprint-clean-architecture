@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
+//TODO validation tests
 @ExtendWith(VertxExtension::class, ResetInMemoryRepoExtension::class)
 internal class WebOpenapiVerticleTest {
 
