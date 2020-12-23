@@ -4,7 +4,7 @@ Content-Type: application/json
 {
     "name": "Computer Accessoires",
     "slug": "computer-accessoires",
-    "isVisible": true
+    "visible": true
 }
 
 ###
@@ -14,5 +14,5 @@ Content-Type: application/json
 {
   "name": "foo",
   "slug": "foo",
-  "isVisible": true
+  "visible": true
 }

@@ -1,0 +1,43 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'application'
+    id 'com.google.cloud.tools.jib' version '2.7.0'
+}
+
+dependencies {
+    implementation project(':infrastructure:vertx-eventbus-adapter')
+    implementation project(':infrastructure:vertx-web-openapi-adapter')
+    implementation project(':infrastructure:vertx-postgres-persistence-adapter')
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'io.vertx:vertx-config'
+    runtimeOnly 'ch.qos.logback:logback-classic'
+
+    testImplementation 'io.vertx:vertx-junit5'
+    testImplementation 'org.assertj:assertj-core'
+}
+
+application {
+    mainClassName = 'codes.fdk.blueprint.api.application.vertx.CategoryApiApplicationKt'
+}
+
+run {
+    jvmArgs = ['--enable-preview', '-Dvertx.disableDnsResolver=true']
+}
+
+jib {
+    from {
+        image = 'openjdk:15-slim'
+    }
+    container {
+        ports = ['8080']
+        jvmFlags = [
+                '--enable-preview',
+                '-Dvertx.disableDnsResolver=true',
+                '-Dvertx-config-path=/workspace/config/config.json'
+        ]
+    }
+}

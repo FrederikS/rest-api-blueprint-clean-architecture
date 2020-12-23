@@ -1,0 +1,7 @@
+{
+  "PGHOST": "localhost",
+  "PGPORT": 5432,
+  "PGUSERNAME": "postgres",
+  "PGPASSWORD": "pw",
+  "PGDATABASE": "postgres"
+}

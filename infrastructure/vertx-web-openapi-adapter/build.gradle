@@ -1,0 +1,37 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+}
+
+ext {
+    jsonUnitVersion = '2.22.0'
+}
+
+dependencies {
+    api project(':domain')
+    implementation project(':infrastructure:vertx-eventbus-adapter')
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+    api 'io.vertx:vertx-lang-kotlin-coroutines'
+    implementation 'io.vertx:vertx-web-openapi'
+    implementation 'org.webjars:swagger-ui:3.37.2'
+    runtimeOnly 'ch.qos.logback:logback-classic'
+
+    testImplementation(testFixtures(project(":domain")))
+    testImplementation 'com.github.javafaker:javafaker'
+    testImplementation 'io.vertx:vertx-junit5'
+    testImplementation 'io.vertx:vertx-web-client'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation "net.javacrumbs.json-unit:json-unit-assertj:$jsonUnitVersion"
+    testImplementation "net.javacrumbs.json-unit:json-unit-json-path:$jsonUnitVersion"
+}
+
+compileJava {
+    options.compilerArgs += [
+            '--patch-module', "codes.fdk.blueprint.api.infrastructure.vertx.web.openapi=${sourceSets.main.output.asPath}"
+    ]
+}

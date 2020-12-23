@@ -14,3 +14,7 @@ secretGenerator:
     literals:
       - pg.username=postgres
       - pg.password=postgres
+
+images:
+  - name: blueprint/category-api
+    newName: blueprint/category-api-spring

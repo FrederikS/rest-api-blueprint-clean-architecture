@@ -14,7 +14,7 @@ interface CategoryMapper {
 
     Category toCategory(CreateCategoryCommand command);
 
-    @Mapping(source = "command.isVisible", target = "isVisible")
+    @Mapping(source = "command.visible", target = "visible")
     @Mapping(source = "category.id", target = "id")
     Category updateCategory(Category category, UpdateCategoryCommand command);
 

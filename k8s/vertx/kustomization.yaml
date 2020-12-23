@@ -1,0 +1,23 @@
+bases:
+  - ../base
+  - ../base/postgres
+
+namePrefix: vertx-
+
+configMapGenerator:
+  - name: category-api-config
+    files:
+      - config.json
+
+secretGenerator:
+  - name: postgres-secret
+    literals:
+      - pg.username=postgres
+      - pg.password=postgres
+
+images:
+  - name: blueprint/category-api
+    newName: blueprint/category-api-vertx
+
+patchesStrategicMerge:
+  - pg-secret-env.yaml

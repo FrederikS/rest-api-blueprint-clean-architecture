@@ -15,8 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static codes.fdk.blueprint.api.domain.service.RandomDataProvider.randomCategoryWithId;
-import static codes.fdk.blueprint.api.domain.service.RandomDataProvider.randomUUID;
+import static codes.fdk.blueprint.api.domain.RandomDataProvider.randomCategoryWithId;
+import static codes.fdk.blueprint.api.domain.RandomDataProvider.randomUUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -66,7 +66,7 @@ class CategoryServiceTest {
         void updateShouldInvokeRepoSaveWithUpdatedProperties() {
             final UpdateCategoryCommand updateCommand = new UpdateCategoryCommand(
                     categoryToUpdate.id(),
-                    !categoryToUpdate.isVisible()
+                    !categoryToUpdate.visible()
             );
 
             StepVerifier.create(categoryService.update(updateCommand))
@@ -78,7 +78,7 @@ class CategoryServiceTest {
                     categoryToUpdate.name(),
                     categoryToUpdate.slug(),
                     categoryToUpdate.parentId(),
-                    updateCommand.isVisible()
+                    updateCommand.visible()
             )));
         }
 

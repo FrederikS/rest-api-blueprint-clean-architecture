@@ -1,0 +1,5 @@
+{
+  "PGHOST": "vertx-postgres",
+  "PGPORT": 5432,
+  "PGDATABASE": "postgres"
+}

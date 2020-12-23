@@ -1,0 +1,34 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+}
+
+dependencies {
+    api project(':domain')
+    implementation project(':infrastructure:vertx-eventbus-adapter')
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+    api 'io.vertx:vertx-lang-kotlin-coroutines'
+    implementation 'io.vertx:vertx-pg-client'
+    runtimeOnly 'ch.qos.logback:logback-classic'
+
+    testImplementation(testFixtures(project(":domain")))
+    testImplementation 'io.vertx:vertx-junit5'
+    testImplementation 'io.vertx:vertx-config'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test'
+    testImplementation 'io.github.serpro69:kotlin-faker:1.5.0'
+}
+
+compileJava {
+    options.compilerArgs += [
+            '--patch-module', "codes.fdk.blueprint.api.infrastructure.vertx.persistence.postgres=${sourceSets.main.output.asPath}"
+    ]
+}

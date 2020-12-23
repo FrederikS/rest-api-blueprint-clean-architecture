@@ -4,19 +4,19 @@ import codes.fdk.blueprint.api.domain.model.CategoryId;
 
 import javax.annotation.Nullable;
 
-public record CreateCategoryCommand(String name, String slug, @Nullable CategoryId parentId, boolean isVisible) {
+public record CreateCategoryCommand(String name, String slug, @Nullable CategoryId parentId, boolean visible) {
 
     public static CreateCategoryCommand createRootCategoryCommand(String name,
                                                                   String slug,
-                                                                  boolean isVisible) {
-        return new CreateCategoryCommand(name, slug, null, isVisible);
+                                                                  boolean visible) {
+        return new CreateCategoryCommand(name, slug, null, visible);
     }
 
     public static CreateCategoryCommand createChildCategoryCommand(String name,
                                                                    String slug,
                                                                    CategoryId parentId,
-                                                                   boolean isVisible) {
-        return new CreateCategoryCommand(name, slug, parentId, isVisible);
+                                                                   boolean visible) {
+        return new CreateCategoryCommand(name, slug, parentId, visible);
     }
 
 }

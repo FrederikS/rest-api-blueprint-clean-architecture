@@ -20,6 +20,8 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
     }
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation(testFixtures(project(":domain")))
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

@@ -3,21 +3,43 @@ kind: Config
 metadata:
   name: category-api
 profiles:
-- name: spring
-  build:
-    artifacts:
-      - image: blueprint/category-api
-        custom:
-          buildCommand: ./gradlew application:spring-boot:bootBuildImage --imageName=$IMAGE
-          dependencies:
-            paths:
-              - application/spring-boot/src/main/**
-              - application/spring-boot/build.gradle
-              - infrastructure/spring-boot-*/src/main/**
-              - infrastructure/spring-boot-*/build.gradle
-    local:
-      push: false
-  deploy:
-    kustomize:
-      paths:
-      - k8s/spring
+  - name: spring
+    build:
+      artifacts:
+        - image: blueprint/category-api-spring
+          custom:
+            buildCommand: ./gradlew application:spring-boot:bootBuildImage --imageName=$IMAGE
+            dependencies:
+              paths:
+                - application/spring-boot/src/main/**
+                - application/spring-boot/build.gradle
+                - infrastructure/spring-boot-*/src/main/**
+                - infrastructure/spring-boot-*/build.gradle
+      local:
+        push: false
+    deploy:
+      kustomize:
+        paths:
+          - k8s/spring
+    portForward:
+      - resourceType: service
+        resourceName: spring-category-api
+        port: 8080
+        localPort: 8080
+  - name: vertx
+    build:
+      artifacts:
+        - image: blueprint/category-api-vertx
+          jib:
+            project: application:vertx
+      local:
+        push: false
+    deploy:
+      kustomize:
+        paths:
+          - k8s/vertx
+    portForward:
+      - resourceType: service
+        resourceName: vertx-category-api
+        port: 8080
+        localPort: 8081

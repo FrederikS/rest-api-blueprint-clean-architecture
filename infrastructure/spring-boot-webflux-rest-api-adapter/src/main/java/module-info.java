@@ -1,4 +1,4 @@
-module codes.fdk.blueprint.api.infrastructure.rest.webflux {
+module codes.fdk.blueprint.api.infrastructure.spring.rest.webflux {
     requires transitive codes.fdk.blueprint.api.domain;
 
     requires spring.web;
@@ -17,5 +17,5 @@ module codes.fdk.blueprint.api.infrastructure.rest.webflux {
     requires org.hibernate.validator;
     requires io.swagger.v3.oas.annotations;
 
-    exports codes.fdk.blueprint.api.infrastructure.rest.webflux;
+    exports codes.fdk.blueprint.api.infrastructure.spring.rest.webflux;
 }

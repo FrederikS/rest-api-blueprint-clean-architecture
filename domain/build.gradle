@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'java-library'
+    id 'java-test-fixtures'
 }
 
 dependencies {
@@ -13,13 +14,18 @@ dependencies {
     testImplementation "org.mockito:mockito-core"
     testImplementation "org.mockito:mockito-junit-jupiter"
     testImplementation "io.projectreactor:reactor-test"
-    testImplementation 'com.github.javafaker:javafaker'
+    testFixturesApi 'org.junit.jupiter:junit-jupiter'
+    testFixturesImplementation 'com.github.javafaker:javafaker'
 }
 
 compileJava {
     options.compilerArgs += [
             '-Amapstruct.defaultInjectionStrategy=constructor'
     ]
+}
+
+compileTestFixturesJava {
+    options.compilerArgs += ['--enable-preview']
 }
 
 jar.enabled = true
